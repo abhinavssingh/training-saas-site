@@ -1,6 +1,18 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import  { HomePageContentType } from "../components/HomePage/HomePage";
+import { initContentTypeRegistry } from '@optimizely/cms-sdk';
+import { initReactComponentRegistry } from "@optimizely/cms-sdk/react/server";
+import HomePage from "../components/HomePage/HomePage";
+
+initContentTypeRegistry([HomePageContentType]);
+
+initReactComponentRegistry({
+  resolver: {
+    HomePage,
+  },
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

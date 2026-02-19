@@ -1,5 +1,46 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Table of Contents
+- [How to configure the JavaScript SDK](#how-to-configure-the-javascript-sdk)
+  - [Install and use the CLI](#install-and-use-the-cli)
+  - [Install the SDK](#install-the-sdk)
+  - [Verify the connection](#verify-the-connection)
+  - [Sync content types to the CMS](#sync-content-types-to-the-cms)
+- [Getting Started](#getting-started)
+- [Learn More](#learn-more)
+- [Deploy on Vercel](#deploy-on-vercel)
+
+## How to configure the JavaScript SDK
+Install the [`Optimizely JavaScript SDK`](https://docs.developers.optimizely.com/content-management-system/v1.0.0-CMS-SaaS/docs/install-javascript-sdk) and CLI to model content and synchronize it with Optimizely CMS. Read this [document](https://docs.developers.optimizely.com/content-management-system/v1.0.0-CMS-SaaS/docs/model-content-types) to create a model and how to render. Here, I have documented important CLI commands.
+
+### Install and use the CLI
+
+You can run the CLI command without installing the SDK globally.
+
+## How to configure the JavaScript SDK
+Install the [`Optimizely JavaScript SDK`](https://docs.developers.optimizely.com/content-management-system/v1.0.0-CMS-SaaS/docs/install-javascript-sdk) and CLI to model content and synchronize it with Optimizely CMS. Read this [document](https://docs.developers.optimizely.com/content-management-system/v1.0.0-CMS-SaaS/docs/model-content-types) to create a model and how to render. Here, I have documented important CLI commands.
+
+### Install and use the CLI
+
+You can run the CLI command without installing the SDK globally.
+```
+npx @optimizely/cms-cli@latest
+```
+### Install the SDK
+Install the Optimizely JavaScript SDK in your project.
+```
+npm install @optimizely/cms-sdk
+```
+### Verify the connection
+Verify that the CLI can connect to your CMS instance.
+```
+npx @optimizely/cms-cli@latest login
+```
+### Sync content types to the CMS
+After defining your content types, push them to the CMS using the CLI.
+```
+npx @optimizely/cms-cli@latest config push optimizely.config.mjs
+```
 ## Getting Started
 
 First, run the development server:
