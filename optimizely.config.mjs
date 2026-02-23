@@ -1,8 +1,13 @@
 import { buildConfig } from '@optimizely/cms-sdk';
 
 export default buildConfig({
-  components: ['./src/components/**/*.tsx'],
-    propertyGroups: [
+  components: ['./src/cms/content-types/**/*.content-type.ts', './src/components/**/*.tsx'],
+  propertyGroups: [
+    {
+      key: 'siteContent',
+      displayName: 'Site Content',
+      sortOrder: 1,
+    },
     {
       key: 'seo',
       displayName: 'SEO',
@@ -13,10 +18,5 @@ export default buildConfig({
       displayName: 'Open Graph',
       sortOrder: 3,
     },
-    {
-        key: 'training',
-        displayName: 'Training',
-        sortOrder: 1,
-    }
   ],
 });
