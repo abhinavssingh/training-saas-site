@@ -1,15 +1,10 @@
 
 export default function Home() {
   return (
-    <>
-      <main className="under-construction">
-        <h1>JS SDK demo page</h1>
-        <p>
-          To see some content in this site, create content in the CMS and go to
-          <code>/[locale]/[slug]</code>, where locale is the localization (for
-          example &quot;en&quot;) and slug is the path of the content
-        </p>
+    <div className="flex min-h-screen items-center justify-center">
+      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 sm:items-start">
+        <h1>This page should not be visible</h1>
       </main>
-    </>
+    </div>
   );
 }

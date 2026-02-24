@@ -1,7 +1,9 @@
 import { buildConfig } from '@optimizely/cms-sdk';
 
 export default buildConfig({
-  components: ['./src/cms/content-types/**/*.content-type.ts', './src/components/**/*.tsx'],
+  components: ['./src/content-types/**/*.ts', 
+    './src/display-templates/**/*.ts',
+    './src/components/**/*.tsx'],
   propertyGroups: [
     {
       key: 'siteContent',
@@ -18,5 +20,9 @@ export default buildConfig({
       displayName: 'Open Graph',
       sortOrder: 3,
     },
+    {
+      key: 'media', 
+      displayName: 'Media', 
+      sortOrder: 4 }
   ],
 });

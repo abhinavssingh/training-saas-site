@@ -2,14 +2,22 @@
   "name": "training-saas-site",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --experimental-https",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "cms:login": "npx @optimizely/cms-cli@latest login",
+    "cms:push-config": "npx @optimizely/cms-cli@latest config push ./optimizely.config.mjs",
+    "cms:push-config-force": "npx @optimizely/cms-cli@latest config push ./optimizely.config.mjs --force",
+    "cms:pull-config": "npx @optimizely/cms-cli@latest config pull --output ./content-types.json"
   },
   "dependencies": {
     "@optimizely/cms-sdk": "^1.0.0",
+    "@tailwindcss/typography": "^0.5.19",
     "next": "16.1.6",
     "react": "19.2.3",
     "react-dom": "19.2.3"

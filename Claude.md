@@ -2,60 +2,136 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Repository Overview
+## Project Overview
 
-This is a **Claude Skills repository** containing reusable AI assistant skills for the **Optimizely SaaS CMS** ecosystem. Skills are linked into projects via `link-skills.cmd` which creates a junction at `.claude\skills` pointing here.
+Next.js 16 frontend for Optimizely SaaS CMS using the Content JS SDK (`@optimizely/cms-sdk`). Deployed to Optimizely Frontend Hosting. Uses the App Router, React 19, Tailwind CSS 4, and TypeScript 5.
 
-There are two independent skills that together cover the full headless CMS workflow: content modeling → frontend deployment.
+## Commands
 
-## Skills
-
-### optimizely-cms-content-types
-
-Generates TypeScript content type definitions for Optimizely SaaS CMS using the Content JS SDK (`@optimizely/cms-sdk`). This targets **SaaS CMS only** — not CMS 12/PaaS.
-
-- **Entry point**: `SKILL.md` — complete skill documentation with quick start examples
-- **References**: `references/` contains detailed guides for property types, standard types, composition patterns, validation, and troubleshooting
-- **Sync command**: `npx optimizely-cms-cli config push optimizely.config.mjs`
-
-Key conventions:
-- Content type keys: PascalCase (`HeroBlock`, `ArticlePage`)
-- Export names: PascalCase + "CT" suffix (`HeroBlockCT`)
-- Property keys: camelCase (`ctaLink`, `backgroundImage`)
-- Files: Match content type key (`HeroBlock.tsx`)
-- Base types: `_page`, `_component`, `_section`, `_experience`, `_folder`, `_image`, `_video`, `_media`
-- Elements are `_component` with `compositionBehaviors: ['elementEnabled']`
-
-Critical gotchas:
-- `optimizely.config.mjs` must use file paths (strings), NOT imported objects
-- Elements only support: string, richText, url, link, boolean, integer, float, dateTime, json — no contentReference, content, component, array, or binary
-- Built-in metadata (publishDate, createdDate, lastModified, displayName) should NOT be redefined as properties
-
-### optimizely-frontend-hosting
-
-Configures and deploys Next.js applications to Optimizely Frontend Hosting.
-
-- **Entry point**: `SKILL.md` — workflow decision tree for setup/deployment/configuration
-- **References**: `references/` contains deployment guide, environment variables guide, and troubleshooting
-- **Deploy script**: `scripts/deploy.ps1` (PowerShell 5.1+)
-- **Templates**: `assets/` contains `.zipignore.template` and `package.json.template`
-
-Key conventions:
-- Managed environments: Test1, Test2, Production (SaaS) — NOT Integration/Preproduction (PaaS)
-- Deployment ZIP filename must contain `.head.app.`
-- `package.json` must be at ZIP root, not nested
-- `.zipignore` must exclude `.next`, `node_modules`, `.env` files
-
-Critical gotchas:
-- `OPTIMIZELY_GRAPH_GATEWAY` at runtime is base URL only (`https://cg.optimizely.com`), but locally includes full path (`/content/v2`) — see helper function in SKILL.md
-- Set environment variables in PaaS Portal BEFORE first deployment to avoid locked state
-- ISR is not yet supported; only SSG and SSR
-- Cannot upload duplicate package names unless content differs
-
-## Linking Skills to Projects
-
-```cmd
-.\link-skills.cmd <your-project-path>
+```bash
+npm run dev                  # Dev server with HTTPS (uses certificates/ dir)
+npm run build                # Production build
+npm run lint                 # ESLint (flat config, core-web-vitals + typescript)
+npm run cms:login            # Authenticate with Optimizely CMS CLI
+npm run cms:push-config      # Push content type definitions to CMS
+npm run cms:push-config-force  # Force push (overwrites existing types)
 ```
 
-Creates junction: `<your-project-path>\.claude\skills` → this repository.
+Deploy via PowerShell: `.\deploy.ps1` (requires `OPTI_*` env vars in `.env`).
+
+## Architecture
+
+### SDK Initialization Flow
+
+`src/optimizely.ts` is imported in the root layout and initializes three registries:
+1. **Content Type Registry** — all content type definitions from `src/content-types/`
+2. **Display Template Registry** — visual display options from `src/display-templates/`
+3. **React Component Registry** — maps content type keys to React components
+
+Every new content type requires registration in all three places plus `optimizely.config.mjs`.
+
+### Content Routing
+
+- `src/app/[...slug]/page.tsx` — Dynamic catch-all that fetches CMS content by URL path via `GraphClient.getContentByPath()` and renders with `<OptimizelyComponent>`
+- `src/app/preview/page.tsx` — Visual Builder preview route for in-context editing
+- `src/app/page.tsx` — Root `/` redirects to `/en`
+
+### Content Type Definitions (`src/content-types/`)
+
+Each file exports a `contentType()` call with a `CT` suffix (e.g., `CardBlockCT`). Two base types:
+- `_page` — Page types (e.g., `ArticlePage`)
+- `_component` — Blocks/elements with composition behaviors:
+  - `sectionEnabled` — Can be placed in Visual Builder sections
+  - `elementEnabled` — Can be placed as inline elements (restricted property types: no arrays with content, no component/json properties)
+
+Content types are also registered as file paths (strings) in `optimizely.config.mjs` for the CMS CLI.
+
+### Component Structure (`src/components/`)
+
+Components are organized by their CMS role:
+- `pages/` — Page type components
+- `blocks/` — Reusable block components
+- `elements/` — Atomic element components
+- `experiences/` — Visual Builder wrappers (`BlankExperience`, `BlankSection`)
+- `layout/` — Header, Footer, Logo
+
+Barrel exports in `src/components/index.ts` must match content type keys used in `optimizely.ts` resolver.
+
+### Component Pattern
+
+```typescript
+import { ContentProps  } from '@optimizely/cms-sdk';
+import { getPreviewUtils } from '@optimizely/cms-sdk/react/server';
+
+type Props = {
+  content: ContentProps <typeof SomeContentTypeCT>;
+  displaySettings?: ContentProps <typeof SomeDisplayTemplate>;
+};
+
+export default function MyComponent({ content, displaySettings }: Props) {
+  const { pa, src } = getPreviewUtils(opti);
+  // pa('propertyName') — adds preview attributes for Visual Builder editing
+  // src(content.image) — returns optimized image URL from CMS CDN
+  return <div {...pa('title')}>{content.title}</div>;
+}
+```
+
+### Experience Pattern
+
+```typescript
+import { BlankExperienceContentType, ContentProps } from '@optimizely/cms-sdk';
+import {
+  ComponentContainerProps,
+  OptimizelyComposition,
+  getPreviewUtils,
+} from '@optimizely/cms-sdk/react/server';
+
+type Props = {
+  content: ContentProps<typeof BlankExperienceContentType>;
+};
+
+function ComponentWrapper({ children, node }: ComponentContainerProps) {
+  const { pa } = getPreviewUtils(node);
+  return <div className="mb-8" {...pa(node)}>{children}</div>;
+}
+
+export default function BlankExperience({ content }: Props) {
+  return (
+    <main className="blank-experience">
+      <OptimizelyComposition
+        nodes={content.composition?.nodes ?? []}
+        ComponentWrapper={ComponentWrapper}
+      />
+    </main>
+  );
+}
+```
+
+### Display Templates vs Content Type Properties
+
+Display templates (`src/display-templates/`) define **visual styling options** (alignment, heading level) shown in the CMS sidebar. Semantic data belongs in content type properties, not display templates.
+
+## Adding a New Content Type (Checklist)
+
+1. Create `src/content-types/NewType.ts` — define with `contentType()`, export as `NewTypeCT`
+2. Export from `src/content-types/index.ts`
+3. Create component in `src/components/{pages,blocks,elements}/NewType.tsx`
+4. Export from `src/components/index.ts`
+5. Add to resolver map in `src/optimizely.ts`
+6. Add file path to `optimizely.config.mjs` components array
+7. Run `npm run cms:push-config` to sync to CMS
+
+## Environment Variables
+
+Copy `.env.template` to `.env`. Key variables:
+- `OPTIMIZELY_GRAPH_SINGLE_KEY` — Required for content fetching
+- `OPTIMIZELY_CMS_URL` — CMS instance URL
+- `OPTIMIZELY_GRAPH_GATEWAY` — Graph endpoint (defaults to `https://cg.optimizely.com`); handled by `src/lib/config.ts` `getGraphGatewayUrl()` which accounts for differences between local dev and Frontend Hosting runtime
+
+## Path Alias
+
+`@/*` maps to `./src/*` (configured in tsconfig.json).
+
+## Image Domains
+
+Remote images allowed from `*.cms.optimizely.com` and `cdn.optimizely.com` (configured in `next.config.ts`).
