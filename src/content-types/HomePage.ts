@@ -4,6 +4,8 @@ import { FolderCT } from './folders/Folder';
 import { BlogPageCT } from './BlogPage';
 import { LandingPageCT } from './LandingPage';
 import { ArticlePageCT } from './ArticlePage';
+import { LandingPageExperienceCT } from './LandingPageExperience';
+import { BlankExperience } from '@/components';
 
 /**
  * Home Page Content Type
@@ -16,7 +18,7 @@ export const HomePageCT = contentType({
   displayName: 'Home Page',
   description: 'The main landing page for the website',
   group: 'training',
-  mayContainTypes: [FolderCT,BlogPageCT,ArticlePageCT,LandingPageCT],
+  mayContainTypes: [FolderCT,BlogPageCT,ArticlePageCT,LandingPageCT,LandingPageExperienceCT],
   properties: {
     ...BasePageCT.properties,
     featuredSection: {
