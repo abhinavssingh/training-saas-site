@@ -43,8 +43,8 @@ export default function BlogPage({ content }: Props) {
 
       {/* Intro */}
       {body && (
-        <section className="blog-intro" {...pa('body')}>
-          <RichText content={body.Json} />
+        <section className="prose-p:my-4" {...pa('body')}>
+          <RichText content={body.json} />
         </section>
       )}
 

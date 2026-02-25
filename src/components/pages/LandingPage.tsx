@@ -3,6 +3,7 @@ import { getPreviewUtils } from '@optimizely/cms-sdk/react/server'
 import { OptimizelyComponent } from '@optimizely/cms-sdk/react/server'
 import { LandingPageCT } from '@/content-types'
 import Image from 'next/image'
+import { RichText } from '@optimizely/cms-sdk/react/richText'
 
 type Props = {
   content: ContentProps<typeof LandingPageCT>
@@ -45,11 +46,12 @@ export default function LandingPage({ content }: Props) {
         )}
       </section>
 
-      {bodyContent && (
-        <section {...pa('body')}>
-          <OptimizelyComponent content={bodyContent} />
-        </section>
-      )}
+            {bodyContent && (
+        <section className="prose-p:my-4" {...pa('body')}>
+          <div className="prose max-w-none">
+            <RichText content={bodyContent.json} />
+          </div>
+        </section>)}
 
       {enableFeatured && featuredContent && (
         <section {...pa('featuredContent')}>
