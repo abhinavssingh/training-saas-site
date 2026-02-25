@@ -99,6 +99,7 @@ export const CommonPageProperties = {
     displayName: 'Featured Image',
     description: 'Featured image for the page',
     group: 'siteContent',
+    allowedTypes: ['_image'],
   },
   url: {
     type: 'url' as const,
