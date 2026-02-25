@@ -1,52 +1,89 @@
-import { ContentProps } from '@optimizely/cms-sdk';
-import { getPreviewUtils } from '@optimizely/cms-sdk/react/server';
-import { HomePageCT } from '@/content-types';
+import { ContentProps } from '@optimizely/cms-sdk'
+import { RichText } from '@optimizely/cms-sdk/react/richText'
+import { getPreviewUtils } from '@optimizely/cms-sdk/react/server'
+import { HomePageCT } from '@/content-types'
+import Image from 'next/image'
 
 type Props = {
-  content: ContentProps<typeof HomePageCT>;
-};
+  content: ContentProps<typeof HomePageCT>
+}
 
 export default function HomePage({ content }: Props) {
-  const { pa, src } = getPreviewUtils(content);
-  const data = content ?? {};
-  const image = data.image ?? null;
-  const heading = data.heading ?? '';
-  const subheading = data.subheading ?? '';
-  const heroCTA = data.heroCallToAction ?? null;
-  const body = data.body ?? '';
-  const featuredSection = data.featuredSection ?? null;
-  const showLatestPosts = !!data.showLatestPosts;
+  const { pa, src } = getPreviewUtils(content)
+
+  const imagePresent =
+    !!content?.image &&
+    // supports either Graph URL or media item URL
+    (content?.image?.url?.default || (content as any)?.image?.item?.Url)
 
   return (
     <main>
+      {/* Hero */}
       <section className="hero">
-        {image ? <img src={image} alt={heading || 'Hero'} /> : null}
+        {imagePresent && (
+          <div className="relative w-full h-64 md:h-96 mb-6 rounded-lg overflow-hidden">
+            <Image
+              src={src(imagePresent)}
+              alt={content?.heading || 'Hero'}
+              fill
+              className="object-cover"
+              {...pa('image')}
+            />
+          </div>
+        )}
+
         <div className="hero-content">
-          <h1>{heading}</h1>
-          {subheading && <h2>{subheading}</h2>}
+          <h1 className="text-3xl md:text-4xl font-bold" {...pa('heading')}>
+            {content?.heading ?? ''}
+          </h1>
+          {content?.subheading && (
+            <h2 className="text-xl md:text-2xl mt-2 text-gray-600" {...pa('subheading')}>
+              {content.subheading}
+            </h2>
+          )}
         </div>
-        {heroCTA && heroCTA.href && heroCTA.text ? (
-          <a href={heroCTA.href} className="btn btn-primary">
-            {heroCTA.text}
+
+        {content?.heroCallToAction?.href && content?.heroCallToAction?.text && (
+          <a
+            href={content.heroCallToAction.href}
+            className="btn btn-primary mt-4 inline-block"
+            {...pa('heroCallToAction')}
+          >
+            {content.heroCallToAction.text}
           </a>
-        ) : null}
+        )}
       </section>
 
-      {body ? (
-        <section className="content">
-          <div dangerouslySetInnerHTML={{ __html: body }} />
+      {/* Body */}
+      {(content?.body?.json || content?.body) && (
+        <section className="content my-8" {...pa('body')}>
+          {content?.body?.json ? (
+            <div className="prose max-w-none">
+              <RichText content={content.body.json} />
+            </div>
+          ) : (
+            <div
+              className="prose max-w-none"
+              dangerouslySetInnerHTML={{ __html: String(content?.body ?? '') }}
+            />
+          )}
         </section>
-      ) : null}
+      )}
 
-      {featuredSection ? (
-        <section className="featured">{featuredSection}</section>
-      ) : null}
-
-      {showLatestPosts ? (
-        <section className="latest-posts">
-          <h2>Latest Blog Posts</h2>
+      {/* Featured Section */}
+      {content?.featuredSection && (
+        <section className="featured my-8" {...pa('featuredSection')}>
+          {content.featuredSection}
         </section>
-      ) : null}
+      )}
+
+      {/* Latest Posts */}
+      {content?.showLatestPosts && (
+        <section className="latest-posts my-8">
+          <h2 className="text-2xl font-semibold">Latest Blog Posts</h2>
+          {/* TODO: Render posts feed here */}
+        </section>
+      )}
     </main>
-  );
+  )
 }

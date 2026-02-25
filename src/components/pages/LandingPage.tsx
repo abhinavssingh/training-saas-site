@@ -1,36 +1,60 @@
-import { ContentProps } from '@optimizely/cms-sdk';
-import { getPreviewUtils } from '@optimizely/cms-sdk/react/server';
-import { LandingPageCT } from '@/content-types';
+import { ContentProps } from '@optimizely/cms-sdk'
+import { getPreviewUtils } from '@optimizely/cms-sdk/react/server'
+import { LandingPageCT } from '@/content-types'
+import Image from 'next/image'
 
 type Props = {
-  content: ContentProps<typeof LandingPageCT>;
-};
+  content: ContentProps<typeof LandingPageCT>
+}
+
 export default function LandingPage({ content }: Props) {
-  const { pa, src } = getPreviewUtils(content);
-  const data = content ?? {};
-  const heroImage = data.image ?? null;
-  const heading = data.heading ?? '';
-  const subheading = data.subheading ?? '';
-  const ctaLink = data.callToActionLink ?? null;
-  const ctaText = data.callToActionText ?? '';
-  const bodyContent = data.body ?? null;
-  const enableFeatured = !!data.enableFeaturedSection;
-  const featuredContent = data.featuredContent ?? null;
+  const { pa, src } = getPreviewUtils(content)
+
+  const heroImage = (content?.image?.url?.default as unknown as string) ?? null
+  const heading = content?.heading ?? ''
+  const subheading = content?.subheading ?? ''
+  const ctaLink = content?.callToActionLink ?? null
+  const ctaText = content?.callToActionText ?? ''
+  const bodyContent = content?.body ?? null
+  const enableFeatured = !!content?.enableFeaturedSection
+  const featuredContent = content?.featuredContent ?? null
 
   return (
     <main>
-      <section>
-        {heroImage ? <img src={heroImage} alt={heading || 'Hero'} /> : null}
-        <h1>{heading}</h1>
-        {subheading && <h2>{subheading}</h2>}
-        {ctaLink && ctaLink.href && ctaText ? (
-          <a href={ctaLink.href}>{ctaText}</a>
-        ) : null}
+      <section>       
+        {heroImage && (
+          <div className="relative w-full h-64 md:h-96">
+            <Image
+              src={src(heroImage)}
+              alt={heading || 'Hero'}
+              fill
+              className="object-cover"
+              {...pa('image')}
+            />
+          </div>
+        )} 
+
+        <h1 {...pa('heading')}>{heading}</h1>
+        {subheading && <h2 {...pa('subheading')}>{subheading}</h2>}
+
+        {ctaLink?.href && ctaText && (
+          <a href={ctaLink.href} {...pa('callToActionLink')}>
+            {ctaText}
+          </a>
+        )}
       </section>
-      {bodyContent ? <section>{bodyContent}</section> : null}
-      {enableFeatured && featuredContent ? (
-        <section>{featuredContent}</section>
-      ) : null}
+
+      {bodyContent && (
+        <section {...pa('body')}>
+          {bodyContent}
+        </section>
+      )}
+
+      {enableFeatured && featuredContent && (
+        <section {...pa('featuredContent')}>
+          {featuredContent}
+        </section>
+      )}
     </main>
-  );
+  )
 }

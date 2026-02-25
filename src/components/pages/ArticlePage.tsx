@@ -1,84 +1,132 @@
-import { ContentProps } from '@optimizely/cms-sdk';
-import { getPreviewUtils } from '@optimizely/cms-sdk/react/server';
-import { ArticlePageCT } from '@/content-types/ArticlePage';
+import { ContentProps } from '@optimizely/cms-sdk'
+import { getPreviewUtils } from '@optimizely/cms-sdk/react/server'
+import { ArticlePageCT } from '@/content-types/ArticlePage'
+import Image from 'next/image'
+import { RichText } from '@optimizely/cms-sdk/react/richText'
 
 type Props = {
-  content: ContentProps<typeof ArticlePageCT>;
-};
+  content: ContentProps<typeof ArticlePageCT>
+}
 
 export default function ArticlePage({ content }: Props) {
-  const { pa, src } = getPreviewUtils(content);
-  const data = content ?? {};
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-  };
+  const { pa, src } = getPreviewUtils(content)
 
-  const image = data.image ?? null;
-  const heading = data.heading ?? '';
-  const subheading = data.subheading ?? '';
-  const author = data.author ?? '';
-  const publishDate = data.publishDate ?? '';
-  const estimatedReadTime = data.estimatedReadTime ?? null;
-  const category = data.category ?? '';
-  const body = data.body ?? '';
-  const tags = Array.isArray(data.tags) ? data.tags : [];
-  const related = Array.isArray(data.relatedArticles) ? data.relatedArticles : [];
+  const formatDate = (dateString?: string) =>
+    dateString
+      ? new Date(dateString).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      })
+      : ''
+
+  const imagePresent =
+    !!content?.image && (content?.image?.url?.default || (content as any)?.image?.item?.Url)
+
+  const heading = content?.heading ?? ''
+  const subheading = content?.subheading ?? ''
+  const author = content?.author ?? ''
+  const publishDate = content?.publishDate ?? ''
+  const estimatedReadTime = content?.estimatedReadTime ?? null
+  const category = content?.category ?? ''
+  const body = (content?.body as unknown as string) ?? ''
+
+  const tags: string[] = Array.isArray(content?.tags) ? (content!.tags as string[]) : []
+  const related: any[] = Array.isArray(content?.relatedArticles)
+    ? (content!.relatedArticles as any[])
+    : []
 
   return (
     <article>
+      {/* Header */}
       <header className="article-header">
-        {image ? (
-          <img src={image} alt={heading || 'Article'} className="featured-image" />
-        ) : null}
+        {imagePresent && (
+          <div className="relative w-full h-64 md:h-96 mb-6 rounded-lg overflow-hidden">
+            <Image
+              src={src(imagePresent)}
+              alt={heading || 'Article'}
+              fill
+              className="object-cover"
+              {...pa('image')}
+            />
+          </div>
+        )}
+
         <div className="article-intro">
-          <h1>{heading}</h1>
-          {subheading && <p className="subtitle">{subheading}</p>}
+          <h1 {...pa('heading')}>{heading}</h1>
+          {subheading && (
+            <p className="subtitle" {...pa('subheading')}>
+              {subheading}
+            </p>
+          )}
+
           <div className="article-meta">
-            {author ? <span className="author">By {author}</span> : null}
-            {publishDate ? (
-              <span className="publish-date">Published {formatDate(publishDate)}</span>
-            ) : null}
-            {estimatedReadTime ? (
-              <span className="read-time">{estimatedReadTime} min read</span>
-            ) : null}
-            {category ? <span className="category">{category}</span> : null}
+            {author && (
+              <span className="author" {...pa('author')}>
+                By {author}
+              </span>
+            )}
+
+            {publishDate && (
+              <span className="publish-date" {...pa('publishDate')}>
+                Published {formatDate(publishDate)}
+              </span>
+            )}
+
+            {estimatedReadTime && (
+              <span className="read-time" {...pa('estimatedReadTime')}>
+                {estimatedReadTime} min read
+              </span>
+            )}
+
+            {category && (
+              <span className="category" {...pa('category')}>
+                {category}
+              </span>
+            )}
           </div>
         </div>
       </header>
 
-      <main className="article-content">
-        {body ? <div dangerouslySetInnerHTML={{ __html: body }} /> : null}
-      </main>
+      {/* Body */}
 
-      {tags.length > 0 ? (
-        <section className="article-tags">
+      {body && (
+        <main className="article-content" {...pa('body')}>
+          <div className="prose max-w-none">
+            <RichText content={body.json} />
+          </div>
+        </main>)}
+
+
+      {/* Tags */}
+      {tags.length > 0 && (
+        <section className="article-tags" {...pa('tags')}>
           <h3>Tags</h3>
           <ul>
-            {tags.map((tag: string) => (
+            {tags.map((tag) => (
               <li key={tag}>
                 <a href={`/blog?tag=${encodeURIComponent(tag)}`}>{tag}</a>
               </li>
             ))}
           </ul>
         </section>
-      ) : null}
+      )}
 
-      {related.length > 0 ? (
-        <section className="related-articles">
+      {/* Related Articles */}
+      {related.length > 0 && (
+        <section className="related-articles" {...pa('relatedArticles')}>
           <h2>Related Articles</h2>
           <ul>
             {related.map((article: any) => (
-              <li key={article._id}>
-                <a href={article._metadata?.url?.href ?? '#'}>{article.heading ?? ''}</a>
+              <li key={article?._id}>
+                <a href={article?._metadata?.url?.href ?? '#'}>
+                  {article?.heading ?? ''}
+                </a>
               </li>
             ))}
           </ul>
         </section>
-      ) : null}
+      )}
     </article>
-  );
+  )
 }
