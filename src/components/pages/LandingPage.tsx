@@ -1,5 +1,6 @@
 import { ContentProps } from '@optimizely/cms-sdk'
 import { getPreviewUtils } from '@optimizely/cms-sdk/react/server'
+import { OptimizelyComponent } from '@optimizely/cms-sdk/react/server'
 import { LandingPageCT } from '@/content-types'
 import Image from 'next/image'
 
@@ -46,13 +47,13 @@ export default function LandingPage({ content }: Props) {
 
       {bodyContent && (
         <section {...pa('body')}>
-          {bodyContent}
+          <OptimizelyComponent content={bodyContent} />
         </section>
       )}
 
       {enableFeatured && featuredContent && (
         <section {...pa('featuredContent')}>
-          {featuredContent}
+          <OptimizelyComponent content={featuredContent} />
         </section>
       )}
     </main>

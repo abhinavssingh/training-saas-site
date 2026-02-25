@@ -1,6 +1,7 @@
 import { ContentProps } from '@optimizely/cms-sdk'
 import { RichText } from '@optimizely/cms-sdk/react/richText'
 import { getPreviewUtils } from '@optimizely/cms-sdk/react/server'
+import { OptimizelyComponent } from '@optimizely/cms-sdk/react/server'
 import { HomePageCT } from '@/content-types'
 import Image from 'next/image'
 
@@ -73,7 +74,7 @@ export default function HomePage({ content }: Props) {
       {/* Featured Section */}
       {content?.featuredSection && (
         <section className="featured my-8" {...pa('featuredSection')}>
-          {content.featuredSection}
+          <OptimizelyComponent content={content.featuredSection} />
         </section>
       )}
 
