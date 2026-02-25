@@ -22,7 +22,7 @@ export default function LandingPage({ content }: Props) {
 
   return (
     <main>
-      <section>       
+      <section className='prose'>       
         {heroImage && (
           <div className="relative w-full h-64 md:h-96">
             <Image

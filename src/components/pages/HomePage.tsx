@@ -20,7 +20,7 @@ export default function HomePage({ content }: Props) {
   return (
     <main>
       {/* Hero */}
-      <section className="hero">
+      <section className="prose">
         {imagePresent && (
           <div className="relative w-full h-64 md:h-96 mb-6 rounded-lg overflow-hidden">
             <Image
@@ -57,7 +57,7 @@ export default function HomePage({ content }: Props) {
 
       {/* Body */}
       {(content?.body?.json || content?.body) && (
-        <section className="content my-8" {...pa('body')}>
+        <section className="prose-p:my-4" {...pa('body')}>
           {content?.body?.json ? (
             <div className="prose max-w-none">
               <RichText content={content.body.json} />

@@ -37,7 +37,7 @@ export default function ArticlePage({ content }: Props) {
     : []
 
   return (
-    <article>
+    <article className='prose lg:prose-xl mx-auto'>
       {/* Header */}
       <header className="article-header">
         {imagePresent && (
@@ -52,10 +52,10 @@ export default function ArticlePage({ content }: Props) {
           </div>
         )}
 
-        <div className="article-intro">
+        <div className="prose-h1:{utility}">
           <h1 {...pa('heading')}>{heading}</h1>
           {subheading && (
-            <p className="subtitle" {...pa('subheading')}>
+            <p className="prose-p:my-4" {...pa('subheading')}>
               {subheading}
             </p>
           )}
@@ -91,7 +91,7 @@ export default function ArticlePage({ content }: Props) {
       {/* Body */}
 
       {body && (
-        <main className="article-content" {...pa('body')}>
+        <main className="prose-p:my-4" {...pa('body')}>
           <div className="prose max-w-none">
             <RichText content={body.json} />
           </div>
