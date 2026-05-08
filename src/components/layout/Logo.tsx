@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import Link from "next/link";
+import Image from 'next/image';
+import Link from 'next/link';
 
 interface LogoProps {
-  variant?: "header" | "footer";
+  variant?: 'header' | 'footer';
   className?: string;
 }
 
-export default function Logo({ variant = "header", className = "" }: LogoProps) {
+export default function Logo({ variant = 'header', className = '' }: LogoProps) {
   // Logo SVG has aspect ratio ~7.6:1 (1247:164 from viewBox)
   const config = {
-    header: { src: "/next.svg", width: 200, height: 26 },
-    footer: { src: "/window.svg", width: 160, height: 21 },
+    header: { src: '/sample_logo.png', width: 120, height: 48 },
+    footer: { src: '/sample_logo.png', width: 160, height: 21 },
   };
 
   const { src, width, height } = config[variant];
@@ -21,10 +21,10 @@ export default function Logo({ variant = "header", className = "" }: LogoProps) 
     <Link href="/" className={`inline-flex items-center ${className}`}>
       <Image
         src={src}
-        alt="Content Gurus"
+        alt="Ministry of Investment"
         width={width}
         height={height}
-        priority={variant === "header"}
+        priority={variant === 'header'}
       />
     </Link>
   );

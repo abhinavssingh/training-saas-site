@@ -5,27 +5,39 @@ This is a [Next.js](https://nextjs.org) project using the [Optimizely Content JS
 1. Copy the `.env.template` file to `.env` and add the necessary values from the CMS and optionally your frontend hosting (PaaS Portal).
 
 2. Push types
+
 ```bash
 npm run cms:push-config
 ```
+
 ### Install and use the CLI
 
 You can run the CLI command without installing the SDK globally.
+
 ```
 npx @optimizely/cms-cli@latest
 ```
+
 ### Install the SDK
+
 Install the Optimizely JavaScript SDK in your project.
+
 ```
 npm install @optimizely/cms-sdk
 ```
+
 ### Verify the connection
+
 Verify that the CLI can connect to your CMS instance.
+
 ```
 npx @optimizely/cms-cli@latest login
 ```
+
 ### Sync content types to the CMS
+
 After defining your content types, push them to the CMS using the CLI.
+
 ```
 npx @optimizely/cms-cli@latest config push optimizely.config.mjs
 ```
@@ -49,13 +61,15 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 5. Add a new application in Settings > Applications
 
 Add localhost:3000 as the host, use all for languages. You should now have a working start page (a Blank Experience)
+
 ## Learn More
 
 To learn more about Optimizely Content JS SDK:
-* [Documentation](https://github.com/episerver/content-js-sdk)
-* [Sample projects](https://github.com/episerver/content-js-sdk/tree/main/samples)
-* [Sample Astro project](https://github.com/kunalshetye/opti-astro)
-* [Mosey Bank demo](https://github.com/episerver/cms-saas-vercel-demo/)
+
+- [Documentation](https://github.com/episerver/content-js-sdk)
+- [Sample projects](https://github.com/episerver/content-js-sdk/tree/main/samples)
+- [Sample Astro project](https://github.com/kunalshetye/opti-astro)
+- [Mosey Bank demo](https://github.com/episerver/cms-saas-vercel-demo/)
 
 To learn more about Next.js, take a look at the following resources:
 

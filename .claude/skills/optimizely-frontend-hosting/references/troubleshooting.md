@@ -13,12 +13,14 @@ Common issues and solutions when deploying to Optimizely Frontend Hosting.
 **Solution**: Always set ALL required environment variables in the PaaS Portal BEFORE starting deployment.
 
 **How to fix**:
+
 1. Go to PaaS Portal > App Settings tab
 2. Add all required environment variables
 3. Wait for settings to apply (may take a few minutes)
 4. Then start deployment
 
 **Variables to set**:
+
 - `OPTIMIZELY_CMS_URL` - Set via PaaS Portal
 - `OPTIMIZELY_GRAPH_GATEWAY` - Set via PaaS Portal
 - `OPTIMIZELY_GRAPH_SECRET` - Set via PaaS Portal
@@ -35,6 +37,7 @@ Common issues and solutions when deploying to Optimizely Frontend Hosting.
 **Solution**: Create ZIP properly with `package.json` at root level.
 
 **Example of CORRECT structure**:
+
 ```
 myapp.head.app.1.0.0.zip
 ├── package.json          ← At root level
@@ -46,6 +49,7 @@ myapp.head.app.1.0.0.zip
 ```
 
 **Example of INCORRECT structure**:
+
 ```
 myapp.head.app.1.0.0.zip
 └── myapp/                ← Extra folder
@@ -57,6 +61,7 @@ myapp.head.app.1.0.0.zip
 **How to verify**: Extract the ZIP and check that `package.json` is immediately visible.
 
 **How to create correct ZIP**:
+
 - Use the provided `deploy.ps1` script (handles this automatically)
 - Or use PowerShell: `Compress-Archive -Path .\* -DestinationPath package.zip`
 - Or use 7-Zip: Select files (not folder), right-click > 7-Zip > Add to archive
@@ -66,12 +71,14 @@ myapp.head.app.1.0.0.zip
 **Problem**: Deployment succeeds but application doesn't work correctly. Files like `page.tsx` in route groups or dynamic routes are missing.
 
 **Why it happens**: Automation scripts or ZIP tools may not handle special folder names correctly:
+
 - Route groups: `(marketing)`, `(auth)`, `(shop)`
 - Dynamic routes: `[slug]`, `[id]`, `[...catchAll]`
 
 **Solution**: Verify ZIP contents before uploading.
 
 **How to check**:
+
 ```powershell
 # Extract and inspect
 Expand-Archive -Path .\myapp.head.app.1.0.0.zip -DestinationPath .\temp-check
@@ -94,6 +101,7 @@ tree /F .\temp-check
 **Solution**: Always use `.head.app.` in the filename.
 
 **Correct naming examples**:
+
 ```
 myapp.head.app.1.0.0.zip          ✓
 site.head.app.20250114.zip        ✓
@@ -101,6 +109,7 @@ frontend.head.app.build-123.zip   ✓
 ```
 
 **Incorrect naming examples**:
+
 ```
 myapp.1.0.0.zip                   ✗ (missing .head.app.)
 myapp.head.1.0.0.zip              ✗ (typo: should be .head.app.)
@@ -116,14 +125,17 @@ myapp-head-app-1.0.0.zip          ✗ (using dashes instead of dots)
 **Solution**: Exclude these directories - they are regenerated during deployment.
 
 **Why they're excluded**:
+
 - `node_modules`: Dependencies are installed during deployment via `npm install` or `yarn install`
 - `.next`: Build output is generated during deployment via `npm run build` or `yarn build`
 
 **How to exclude**:
+
 1. Create `.zipignore` file (recommended - automated by `deploy.ps1`)
 2. Or manually exclude when creating ZIP
 
 **Typical .zipignore**:
+
 ```
 .next
 node_modules
@@ -132,6 +144,7 @@ node_modules
 ```
 
 **Before/After**:
+
 - With node_modules: ~300-500 MB package ✗
 - Without node_modules: ~5-20 MB package ✓
 
@@ -142,6 +155,7 @@ node_modules
 **Cause**: Missing dependency in `package.json` or `yarn.lock`/`package-lock.json` not included.
 
 **Solution**:
+
 1. Ensure `package-lock.json` (npm) or `yarn.lock` (yarn) is in your package
 2. Verify all dependencies are listed in `package.json`
 3. Run `npm install` or `yarn install` locally to regenerate lock file if needed
@@ -151,6 +165,7 @@ node_modules
 **Cause**: Required environment variable not set in PaaS Portal before deployment.
 
 **Solution**:
+
 1. Stop current deployment if it's running
 2. Go to PaaS Portal > App Settings
 3. Add the missing environment variable
@@ -162,6 +177,7 @@ node_modules
 **Cause**: Missing or incorrectly named build script in `package.json`.
 
 **Solution**: Ensure `package.json` has:
+
 ```json
 {
   "scripts": {
@@ -176,6 +192,7 @@ node_modules
 **Cause**: Build takes too long (>20 minutes).
 
 **Solution**:
+
 1. Optimize build process
 2. Reduce bundle size
 3. Check for infinite loops or hanging processes
@@ -188,6 +205,7 @@ node_modules
 **Cause**: Invalid or expired credentials.
 
 **Solution**:
+
 ```powershell
 # Verify environment variables
 echo $env:OPTI_PROJECT_ID
@@ -215,6 +233,7 @@ $zipName = "myapp.head.app.$timestamp.zip"
 **Cause**: Incorrect environment name or credentials don't have access.
 
 **Solution**:
+
 1. Verify environment name matches exactly (Test1, Test2, Production)
 2. Check API credentials have access to this environment in PaaS Portal
 3. Re-generate API credentials with correct environment access if needed
@@ -224,6 +243,7 @@ $zipName = "myapp.head.app.$timestamp.zip"
 **Cause**: Various reasons - need to check logs.
 
 **Solution**:
+
 1. Go to PaaS Portal > Deployment tab
 2. Click on the failed deployment
 3. View detailed logs
@@ -235,6 +255,7 @@ $zipName = "myapp.head.app.$timestamp.zip"
 ### Application doesn't start
 
 **Check**:
+
 1. PaaS Portal > Troubleshoot tab > Application Logs
 2. Look for startup errors
 3. Verify `start` script in `package.json`: `"start": "next start"`
@@ -242,6 +263,7 @@ $zipName = "myapp.head.app.$timestamp.zip"
 ### Environment variables not available at runtime
 
 **Check**:
+
 1. PaaS Portal > App Settings tab
 2. Verify variables are set
 3. Restart application: Troubleshoot tab > Restart Web App
@@ -251,6 +273,7 @@ $zipName = "myapp.head.app.$timestamp.zip"
 **Cause**: Application not properly configured in CMS or hostname mapping missing.
 
 **Solution**:
+
 1. CMS > Settings > Applications
 2. Create/select your application
 3. Go to Hostnames section
@@ -260,6 +283,7 @@ $zipName = "myapp.head.app.$timestamp.zip"
 ### CDN not serving latest content
 
 **Solution**:
+
 1. PaaS Portal > Troubleshoot tab
 2. Click "Purge Cache"
 3. Wait a few minutes for cache to clear
@@ -269,6 +293,7 @@ $zipName = "myapp.head.app.$timestamp.zip"
 ### Enable verbose logging
 
 During deployment:
+
 ```powershell
 Start-EpiDeployment ... -Verbose
 ```
@@ -316,6 +341,7 @@ Before each deployment, verify:
 
 **Q: How long does deployment take?**
 A: Typically 5-10 minutes. Depends on:
+
 - Package upload size
 - Number of dependencies to install
 - Build complexity
@@ -339,6 +365,7 @@ A: Usually means a deployment is in progress. Wait for it to complete or fail. I
 ## Contact Support
 
 If issues persist:
+
 1. Gather deployment logs and error messages
 2. Note the deployment ID
 3. Contact Optimizely Support via PaaS Portal

@@ -28,11 +28,13 @@ Complete guide for deploying Next.js applications to Optimizely Frontend Hosting
 ## Step 2: Configure Environment Variables
 
 Option A: Use the setup script (recommended):
+
 ```powershell
 .\setup-env.ps1
 ```
 
 Option B: Set manually for current session:
+
 ```powershell
 $env:OPTI_PROJECT_ID = "<your_project_id>"
 $env:OPTI_CLIENT_KEY = "<your_client_key>"
@@ -40,6 +42,7 @@ $env:OPTI_CLIENT_SECRET = "<your_client_secret>"
 ```
 
 Option C: Set permanently (Windows):
+
 ```powershell
 [System.Environment]::SetEnvironmentVariable("OPTI_PROJECT_ID", "<value>", "User")
 [System.Environment]::SetEnvironmentVariable("OPTI_CLIENT_KEY", "<value>", "User")
@@ -105,6 +108,7 @@ yarn-error.log*
 ### Verify Project Structure
 
 Ensure your project has this structure at minimum:
+
 ```
 your-nextjs-app/
 ├── package.json          (required)
@@ -128,6 +132,7 @@ From your project root:
 ```
 
 The script will:
+
 1. Validate environment variables
 2. Apply .zipignore exclusions
 3. Create a timestamped deployment package
@@ -240,6 +245,7 @@ After first deployment:
 ### Set Application Settings
 
 In the PaaS Portal, **App Settings** tab:
+
 1. Add any custom environment variables your app needs
 2. These are available during build and runtime
 3. Examples: API keys, feature flags, custom configuration
@@ -255,6 +261,7 @@ Start-EpiDeployment ... -DirectDeploy
 ```
 
 Deploys directly to the Web App without slot swap. Available for:
+
 - Test1
 - Test2
 - Integration (PaaS)
@@ -279,11 +286,13 @@ Shows detailed progress information during deployment.
 ## Target Environment Names
 
 ### SaaS Frontend Hosting (SaaS CMS)
+
 - `Test1`
 - `Test2`
 - `Production`
 
 ### PaaS Hosting (CMS 12)
+
 - `Integration`
 - `Preproduction`
 - `Production`

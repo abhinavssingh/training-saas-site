@@ -14,27 +14,27 @@ export const HomePageCT = contentType({
   displayName: 'Home Page',
   baseType: '_page',
   properties: {
-    heading: { 
-      type: 'string', 
+    heading: {
+      type: 'string',
       displayName: 'Page Heading',
-      required: true,
-      localized: true,
+      isRequired: true,
+      isLocalized: true,
       indexingType: 'searchable',
     },
-    subheading: { 
-      type: 'string', 
+    subheading: {
+      type: 'string',
       displayName: 'Subheading',
-      localized: true,
+      isLocalized: true,
     },
-    heroImage: { 
-      type: 'contentReference', 
+    heroImage: {
+      type: 'contentReference',
       displayName: 'Hero Image',
       allowedTypes: ['_image'],
     },
-    mainContent: { 
-      type: 'richText', 
+    mainContent: {
+      type: 'richText',
       displayName: 'Main Content',
-      localized: true,
+      isLocalized: true,
     },
     featuredSections: {
       type: 'array',
@@ -56,40 +56,40 @@ export const ArticlePageCT = contentType({
   displayName: 'Article Page',
   baseType: '_page',
   properties: {
-    heading: { 
-      type: 'string', 
+    heading: {
+      type: 'string',
       displayName: 'Article Title',
-      required: true,
-      localized: true,
+      isRequired: true,
+      isLocalized: true,
       maxLength: 200,
       indexingType: 'searchable',
     },
-    author: { 
-      type: 'string', 
+    author: {
+      type: 'string',
       displayName: 'Author',
     },
-    publishDate: { 
-      type: 'dateTime', 
+    publishDate: {
+      type: 'dateTime',
       displayName: 'Publish Date',
-      required: true,
+      isRequired: true,
       indexingType: 'queryable',
     },
-    featuredImage: { 
-      type: 'contentReference', 
+    featuredImage: {
+      type: 'contentReference',
       displayName: 'Featured Image',
       allowedTypes: ['_image'],
     },
-    summary: { 
-      type: 'string', 
+    summary: {
+      type: 'string',
       displayName: 'Article Summary',
-      localized: true,
+      isLocalized: true,
       maxLength: 500,
     },
-    body: { 
-      type: 'richText', 
+    body: {
+      type: 'richText',
       displayName: 'Article Content',
-      required: true,
-      localized: true,
+      isRequired: true,
+      isLocalized: true,
     },
     tags: {
       type: 'array',
@@ -100,7 +100,7 @@ export const ArticlePageCT = contentType({
     relatedArticles: {
       type: 'array',
       displayName: 'Related Articles',
-      items: { 
+      items: {
         type: 'contentReference',
         allowedTypes: ['ArticlePage'],
       },
@@ -120,24 +120,24 @@ export const BlogPageCT = contentType({
   displayName: 'Blog Page',
   baseType: '_page',
   properties: {
-    title: { 
-      type: 'string', 
+    title: {
+      type: 'string',
       displayName: 'Blog Title',
-      required: true,
-      localized: true,
+      isRequired: true,
+      isLocalized: true,
     },
-    author: { 
-      type: 'string', 
+    author: {
+      type: 'string',
       displayName: 'Author',
-      required: true,
+      isRequired: true,
     },
-    publishDate: { 
-      type: 'dateTime', 
+    publishDate: {
+      type: 'dateTime',
       displayName: 'Publish Date',
-      required: true,
+      isRequired: true,
     },
-    category: { 
-      type: 'string', 
+    category: {
+      type: 'string',
       displayName: 'Category',
       enum: [
         { value: 'tech', displayName: 'Technology' },
@@ -146,25 +146,25 @@ export const BlogPageCT = contentType({
         { value: 'news', displayName: 'News' },
       ],
     },
-    featuredImage: { 
-      type: 'contentReference', 
+    featuredImage: {
+      type: 'contentReference',
       displayName: 'Featured Image',
       allowedTypes: ['_image'],
     },
-    excerpt: { 
-      type: 'string', 
+    excerpt: {
+      type: 'string',
       displayName: 'Excerpt',
-      localized: true,
+      isLocalized: true,
       maxLength: 300,
     },
-    content: { 
-      type: 'richText', 
+    content: {
+      type: 'richText',
       displayName: 'Blog Content',
-      required: true,
-      localized: true,
+      isRequired: true,
+      isLocalized: true,
     },
-    allowComments: { 
-      type: 'boolean', 
+    allowComments: {
+      type: 'boolean',
       displayName: 'Allow Comments',
     },
     tags: {
@@ -186,19 +186,19 @@ export const LandingPageCT = contentType({
   displayName: 'Landing Page',
   baseType: '_page',
   properties: {
-    heading: { 
-      type: 'string', 
+    heading: {
+      type: 'string',
       displayName: 'Page Heading',
-      required: true,
-      localized: true,
+      isRequired: true,
+      isLocalized: true,
     },
-    subheading: { 
-      type: 'string', 
+    subheading: {
+      type: 'string',
       displayName: 'Subheading',
-      localized: true,
+      isLocalized: true,
     },
-    heroSection: { 
-      type: 'content', 
+    heroSection: {
+      type: 'content',
       displayName: 'Hero Section',
       allowedTypes: ['HeroBlock'],
     },
@@ -207,16 +207,16 @@ export const LandingPageCT = contentType({
       displayName: 'Content Sections',
       items: { type: 'content' },
     },
-    ctaText: { 
-      type: 'string', 
+    ctaText: {
+      type: 'string',
       displayName: 'CTA Button Text',
     },
-    ctaLink: { 
-      type: 'link',  // Use link type for rich link with text/title/target
+    ctaLink: {
+      type: 'link', // Use link type for rich link with text/title/target
       displayName: 'CTA Button Link',
     },
-    hideNavigation: { 
-      type: 'boolean', 
+    hideNavigation: {
+      type: 'boolean',
       displayName: 'Hide Navigation',
     },
   },
@@ -236,18 +236,18 @@ export const HeroBlockCT = contentType({
   key: 'HeroBlock',
   displayName: 'Hero Block',
   baseType: '_component',
-  compositionBehaviors: ['sectionEnabled'],  // Can be used as section
+  compositionBehaviors: ['sectionEnabled'], // Can be used as section
   properties: {
     title: {
       type: 'string',
       displayName: 'Title',
-      required: true,
-      localized: true,
+      isRequired: true,
+      isLocalized: true,
     },
     subtitle: {
       type: 'string',
       displayName: 'Subtitle',
-      localized: true,
+      isLocalized: true,
     },
     backgroundImage: {
       type: 'contentReference',
@@ -275,28 +275,28 @@ export const CallToActionBlockCT = contentType({
   key: 'CallToActionBlock',
   displayName: 'Call To Action Block',
   baseType: '_component',
-  compositionBehaviors: ['sectionEnabled', 'elementEnabled'],  // Works as both!
+  compositionBehaviors: ['sectionEnabled', 'elementEnabled'], // Works as both!
   properties: {
     heading: {
       type: 'string',
       displayName: 'Heading',
-      required: true,
-      localized: true,
+      isRequired: true,
+      isLocalized: true,
     },
     description: {
       type: 'richText',
       displayName: 'Description',
-      localized: true,
+      isLocalized: true,
     },
     primaryButtonText: {
       type: 'string',
       displayName: 'Primary Button Text',
-      required: true,
+      isRequired: true,
     },
     primaryButtonLink: {
-      type: 'link',  // Rich link with text/title/target
+      type: 'link', // Rich link with text/title/target
       displayName: 'Primary Button Link',
-      required: true,
+      isRequired: true,
     },
     secondaryButtonText: {
       type: 'string',
@@ -319,30 +319,30 @@ export const CardBlockCT = contentType({
   key: 'CardBlock',
   displayName: 'Card Block',
   baseType: '_component',
-  compositionBehaviors: ['sectionEnabled', 'elementEnabled'],  // Flexible usage
+  compositionBehaviors: ['sectionEnabled', 'elementEnabled'], // Flexible usage
   properties: {
-    heading: { 
-      type: 'string', 
+    heading: {
+      type: 'string',
       displayName: 'Card Heading',
-      required: true,
-      localized: true,
+      isRequired: true,
+      isLocalized: true,
     },
-    image: { 
-      type: 'contentReference', 
+    image: {
+      type: 'contentReference',
       displayName: 'Card Image',
       allowedTypes: ['_image'],
     },
-    description: { 
-      type: 'richText', 
+    description: {
+      type: 'richText',
       displayName: 'Card Description',
-      localized: true,
+      isLocalized: true,
     },
-    linkText: { 
-      type: 'string', 
+    linkText: {
+      type: 'string',
       displayName: 'Link Text',
     },
-    linkUrl: { 
-      type: 'url',  // Simple URL
+    linkUrl: {
+      type: 'url', // Simple URL
       displayName: 'Link URL',
     },
   },
@@ -369,8 +369,8 @@ export const TitleElementCT = contentType({
     text: {
       type: 'string',
       displayName: 'Title Text',
-      required: true,
-      localized: true,
+      isRequired: true,
+      isLocalized: true,
     },
     level: {
       type: 'string',
@@ -399,25 +399,25 @@ export const ImageElementCT = contentType({
   baseType: '_component',
   compositionBehaviors: ['elementEnabled'],
   properties: {
-    image: { 
-      type: 'contentReference', 
+    image: {
+      type: 'contentReference',
       displayName: 'Image',
-      required: true,
+      isRequired: true,
       allowedTypes: ['_image'],
     },
-    altText: { 
-      type: 'string', 
+    altText: {
+      type: 'string',
       displayName: 'Alt Text',
-      required: true,
-      localized: true,
+      isRequired: true,
+      isLocalized: true,
     },
-    caption: { 
-      type: 'string', 
+    caption: {
+      type: 'string',
       displayName: 'Caption',
-      localized: true,
+      isLocalized: true,
     },
-    link: { 
-      type: 'url',  // Simple URL
+    link: {
+      type: 'url', // Simple URL
       displayName: 'Image Link',
     },
   },
@@ -441,13 +441,13 @@ export const ButtonElementCT = contentType({
     text: {
       type: 'string',
       displayName: 'Button Text',
-      required: true,
-      localized: true,
+      isRequired: true,
+      isLocalized: true,
     },
     link: {
-      type: 'link',  // Rich link with text/title/target
+      type: 'link', // Rich link with text/title/target
       displayName: 'Button Link',
-      required: true,
+      isRequired: true,
     },
   },
 });
@@ -521,7 +521,7 @@ export const AboutExperienceCT = contentType({
     title: {
       type: 'string',
       displayName: 'Title',
-      required: true,
+      isRequired: true,
     },
     subtitle: {
       type: 'string',
@@ -537,19 +537,19 @@ Display templates define visual variations that editors can apply to components.
 
 ### When to Use Display Templates vs Enum Properties
 
-| Use Display Template | Use Enum Property |
-|---------------------|-------------------|
-| Visual styling (colors, sizes, alignment) | Semantic content (heading level h1-h6) |
-| Layout variations (orientation, spacing) | Content categories (blog category) |
-| Component variants (primary/secondary button) | Data values (status, type) |
-| Presentation options | Business logic choices |
+| Use Display Template                          | Use Enum Property                      |
+| --------------------------------------------- | -------------------------------------- |
+| Visual styling (colors, sizes, alignment)     | Semantic content (heading level h1-h6) |
+| Layout variations (orientation, spacing)      | Content categories (blog category)     |
+| Component variants (primary/secondary button) | Data values (status, type)             |
+| Presentation options                          | Business logic choices                 |
 
-**Key principle:** If changing the value affects how something *looks* (presentation), use `displayTemplate`. If it affects what something *means* (content/semantics), use `enum`.
+**Key principle:** If changing the value affects how something _looks_ (presentation), use `displayTemplate`. If it affects what something _means_ (content/semantics), use `enum`.
 
 ### Basic Display Template
 
 ```typescript
-import { contentType, displayTemplate, Infer } from '@optimizely/cms-sdk';
+import { Infer, contentType, displayTemplate } from '@optimizely/cms-sdk';
 
 // Content type - only content properties
 export const CardBlockCT = contentType({
@@ -558,7 +558,7 @@ export const CardBlockCT = contentType({
   baseType: '_component',
   compositionBehaviors: ['elementEnabled'],
   properties: {
-    title: { type: 'string', displayName: 'Title', required: true },
+    title: { type: 'string', displayName: 'Title', isRequired: true },
     description: { type: 'string', displayName: 'Description' },
     image: { type: 'contentReference', displayName: 'Image', allowedTypes: ['_image'] },
   },
@@ -569,7 +569,7 @@ export const CardDisplayTemplate = displayTemplate({
   key: 'CardDisplayTemplate',
   isDefault: true,
   displayName: 'Card Style',
-  contentType: 'CardBlock',  // Links to specific content type
+  contentType: 'CardBlock', // Links to specific content type
   settings: {
     variant: {
       editor: 'select',
@@ -607,7 +607,7 @@ export const HeroBlockCT = contentType({
   baseType: '_component',
   compositionBehaviors: ['sectionEnabled'],
   properties: {
-    title: { type: 'string', displayName: 'Title', required: true },
+    title: { type: 'string', displayName: 'Title', isRequired: true },
     subtitle: { type: 'string', displayName: 'Subtitle' },
     backgroundImage: { type: 'contentReference', displayName: 'Background', allowedTypes: ['_image'] },
   },
@@ -640,7 +640,7 @@ export const HeroCenteredTemplate = displayTemplate({
   isDefault: false,
   displayName: 'Centered Hero',
   contentType: 'HeroBlock',
-  tag: 'Centered',  // Links to CenteredHero component variant
+  tag: 'Centered', // Links to CenteredHero component variant
   settings: {
     textColor: {
       editor: 'select',
@@ -699,38 +699,29 @@ export default function CardBlock({ opti, displaySettings }: Props) {
 ```typescript
 // In your optimizely.ts setup file
 import { initDisplayTemplateRegistry } from '@optimizely/cms-sdk';
-import {
-  CardDisplayTemplate,
-  HeroDefaultTemplate,
-  HeroCenteredTemplate,
-  ButtonDisplayTemplate,
-} from '@/components';
+import { ButtonDisplayTemplate, CardDisplayTemplate, HeroCenteredTemplate, HeroDefaultTemplate } from '@/components';
 
-initDisplayTemplateRegistry([
-  CardDisplayTemplate,
-  HeroDefaultTemplate,
-  HeroCenteredTemplate,
-  ButtonDisplayTemplate,
-]);
+initDisplayTemplateRegistry([CardDisplayTemplate, HeroDefaultTemplate, HeroCenteredTemplate, ButtonDisplayTemplate]);
 ```
 
 ### Display Template Properties Reference
 
-| Property | Required | Description |
-|----------|----------|-------------|
-| `key` | Yes | Unique identifier |
-| `displayName` | Yes | Name shown to editors |
-| `isDefault` | Yes | Whether this is the default template |
-| `settings` | Yes | Object defining available styling options |
-| `contentType` | One of these | Apply to specific content type |
-| `baseType` | One of these | Apply to `'_component'`, `'_experience'`, or `'_section'` |
-| `nodeType` | One of these | Apply to `'row'` or `'column'` |
-| `tag` | No | Links to a component variant |
-| `sortOrder` | No | Display order in CMS UI |
+| Property      | Required     | Description                                               |
+| ------------- | ------------ | --------------------------------------------------------- |
+| `key`         | Yes          | Unique identifier                                         |
+| `displayName` | Yes          | Name shown to editors                                     |
+| `isDefault`   | Yes          | Whether this is the default template                      |
+| `settings`    | Yes          | Object defining available styling options                 |
+| `contentType` | One of these | Apply to specific content type                            |
+| `baseType`    | One of these | Apply to `'_component'`, `'_experience'`, or `'_section'` |
+| `nodeType`    | One of these | Apply to `'row'` or `'column'`                            |
+| `tag`         | No           | Links to a component variant                              |
+| `sortOrder`   | No           | Display order in CMS UI                                   |
 
 ### Setting Editor Types
 
 **Select** - Dropdown for single selection:
+
 ```typescript
 color: {
   editor: 'select',
@@ -745,6 +736,7 @@ color: {
 > **⚠️ IMPORTANT: Choice Key Naming Rules**
 >
 > Choice keys (the object property names in `choices`) must follow these rules:
+>
 > - Must start with a non-numerical character (letter or underscore)
 > - Can only contain alphanumeric characters (a-z, A-Z, 0-9) or underscores
 > - **NO hyphens allowed** - use underscores instead
@@ -766,6 +758,7 @@ color: {
 > If your component library expects hyphenated values (like Hedwig's `'lighter-brand'`), create a mapping in your React component to convert underscore keys to hyphenated values.
 
 **Checkbox** - Toggle for boolean values:
+
 ```typescript
 showBorder: {
   editor: 'checkbox',

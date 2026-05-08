@@ -1,8 +1,8 @@
-import { ContentProps } from '@optimizely/cms-sdk';
+import { ContentProps, damAssets } from '@optimizely/cms-sdk';
 import { getPreviewUtils } from '@optimizely/cms-sdk/react/server';
-import { ImageElementCT } from '@/content-types/ImageElement';
-import { ImageDisplayTemplate } from '@/display-templates';
 import Image from 'next/image';
+import { ImageElementCT } from '@/content-types/elements/ImageElement';
+import { ImageDisplayTemplate } from '@/display-templates';
 
 type Props = {
   content: ContentProps<typeof ImageElementCT>;
@@ -11,8 +11,9 @@ type Props = {
 
 export default function ImageElement({ content, displaySettings }: Props) {
   const { pa, src } = getPreviewUtils(content);
+  const { getAlt } = damAssets(content);
 
-  if (!content.image?.url?.default && !content.image?.item?.Url) {
+  if (!src(content.image)) {
     return null;
   }
 
@@ -35,17 +36,17 @@ export default function ImageElement({ content, displaySettings }: Props) {
 
   // Size classes (max-width)
   const sizeClasses = {
-    small: 'max-w-xs',    // 300px
-    medium: 'max-w-lg',   // 500px
-    large: 'max-w-3xl',   // 800px
+    small: 'max-w-xs', // 300px
+    medium: 'max-w-lg', // 500px
+    large: 'max-w-3xl', // 800px
     full: 'w-full',
   };
 
   // Aspect ratio classes
   const aspectRatioClasses = {
-    auto: 'h-64 md:h-80',  // Fixed height for auto (original behavior)
+    auto: 'h-64 md:h-80', // Fixed height for auto (original behavior)
     square: 'aspect-square',
-    video: 'aspect-video',      // 16:9
+    video: 'aspect-video', // 16:9
     standard: 'aspect-[4/3]',
     classic: 'aspect-[3/2]',
     ultrawide: 'aspect-[21/9]',
@@ -95,28 +96,22 @@ export default function ImageElement({ content, displaySettings }: Props) {
   return (
     <figure className={spacingClasses[spacing]}>
       <div
-        className={`
-          relative
-          w-full
-          ${alignmentClasses[alignment]}
-          ${sizeClasses[size]}
-          ${aspectRatioClasses[aspectRatio]}
-          ${borderRadiusClasses[borderRadius]}
-          ${shadowClasses[shadow]}
-          overflow-hidden
-        `.trim().replace(/\s+/g, ' ')}
+        className={`relative w-full ${alignmentClasses[alignment]} ${sizeClasses[size]} ${aspectRatioClasses[aspectRatio]} ${borderRadiusClasses[borderRadius]} ${shadowClasses[shadow]} overflow-hidden`
+          .trim()
+          .replace(/\s+/g, ' ')}
       >
         <Image
-          src={src(content.image)}
-          alt={content.altText || ''}
+          src={src(content.image)!}
+          alt={getAlt(content.image, content.altText || '')}
           fill
           className={`object-cover ${verticalAlignmentClasses[verticalAlignment]}`}
+          sizes="(max-width: 768px) 100vw, 50vw"
           {...pa('image')}
         />
       </div>
       {content.caption && (
         <figcaption
-          className={`mt-2 text-sm text-gray-500 italic ${captionAlignmentClasses[alignment]}`}
+          className={`mt-2 text-sm text-muted-foreground italic ${captionAlignmentClasses[alignment]}`}
           {...pa('caption')}
         >
           {content.caption}

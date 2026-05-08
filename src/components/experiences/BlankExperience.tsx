@@ -11,7 +11,11 @@ type Props = {
 
 function ComponentWrapper({ children, node }: ComponentContainerProps) {
   const { pa } = getPreviewUtils(node);
-  return <div className="mb-8" {...pa(node)}>{children}</div>;
+  return (
+    <div className="mb-2" {...pa(node)}>
+      {children}
+    </div>
+  );
 }
 
 export default function BlankExperience({ content }: Props) {

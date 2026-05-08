@@ -1,10 +1,10 @@
 import type { JSX } from 'react';
-import { ContentProps } from '@optimizely/cms-sdk';
+import { ContentProps, damAssets } from '@optimizely/cms-sdk';
 import { getPreviewUtils } from '@optimizely/cms-sdk/react/server';
-import { BannerElementCT } from '@/content-types/BannerElement';
-import { BannerDisplayTemplate } from '@/display-templates/BannerElementDisplayTemplate';
 import Image from 'next/image';
 import Link from 'next/link';
+import { BannerElementCT } from '@/content-types/elements/BannerElement';
+import { BannerDisplayTemplate } from '@/display-templates/elements/BannerElementDisplayTemplate';
 
 type Props = {
   content: ContentProps<typeof BannerElementCT>;
@@ -13,8 +13,9 @@ type Props = {
 
 export default function BannerElement({ content, displaySettings }: Props) {
   const { pa, src } = getPreviewUtils(content);
+  const { getAlt } = damAssets(content);
 
-  if (!content.backgroundImage?.url?.default && !content.backgroundImage?.item?.Url) {
+  if (!src(content.backgroundImage)) {
     return null;
   }
 
@@ -48,20 +49,21 @@ export default function BannerElement({ content, displaySettings }: Props) {
   const overlayOpacity = overlayPercentage / 100;
 
   return (
-    <div className="relative w-full h-96 overflow-hidden">
+    <div className="relative h-96 w-full overflow-hidden">
       {/* Background Image */}
       <Image
-        src={src(content.backgroundImage)}
-        alt=""
+        src={src(content.backgroundImage)!}
+        alt={getAlt(content.backgroundImage, '')}
         fill
         className="object-cover"
+        sizes="100vw"
         priority
       />
 
       {/* Overlay */}
       {overlayOpacity > 0 && (
         <div
-          className="absolute inset-0 bg-black"
+          className="absolute inset-0 bg-primary"
           style={{ opacity: overlayOpacity }}
           aria-hidden="true"
         />
@@ -69,18 +71,14 @@ export default function BannerElement({ content, displaySettings }: Props) {
 
       {/* Content Container */}
       <div
-        className={`
-          relative z-10 h-full
-          flex flex-col
-          ${verticalAlignmentClasses[verticalAlignment]}
-          ${horizontalAlignmentClasses[horizontalAlignment]}
-          px-6 py-8 md:px-12 md:py-16
-        `.trim().replace(/\s+/g, ' ')}
+        className={`relative z-10 flex h-full flex-col ${verticalAlignmentClasses[verticalAlignment]} ${horizontalAlignmentClasses[horizontalAlignment]} px-6 py-8 md:px-12 md:py-16`
+          .trim()
+          .replace(/\s+/g, ' ')}
       >
         <div className="max-w-4xl">
           {/* Heading */}
           <HeadingTag
-            className="text-white font-bold text-3xl md:text-5xl mb-4"
+            className="mb-4 text-3xl font-bold text-primary-foreground md:text-5xl"
             {...pa('heading')}
           >
             {content.heading}
@@ -88,10 +86,7 @@ export default function BannerElement({ content, displaySettings }: Props) {
 
           {/* Text */}
           {content.text && (
-            <p
-              className="text-white text-lg md:text-xl mb-6"
-              {...pa('text')}
-            >
+            <p className="mb-6 text-lg text-primary-foreground md:text-xl" {...pa('text')}>
               {content.text}
             </p>
           )}
@@ -103,15 +98,11 @@ export default function BannerElement({ content, displaySettings }: Props) {
               className={
                 ctaStyle === 'button'
                   ? ctaColor === 'light'
-                    ? `inline-block bg-white text-black px-6 py-3 rounded-lg font-semibold
-                       hover:bg-gray-100 transition-colors`
-                    : `inline-block bg-black text-white px-6 py-3 rounded-lg font-semibold
-                       hover:bg-gray-800 transition-colors`
+                    ? `inline-block rounded-lg bg-primary-foreground px-6 py-3 font-semibold text-primary transition-opacity hover:opacity-90`
+                    : `inline-block rounded-lg bg-primary px-6 py-3 font-semibold text-primary-foreground transition-opacity hover:opacity-90`
                   : ctaColor === 'light'
-                  ? `inline-block text-white font-semibold underline underline-offset-4
-                     hover:text-gray-200 transition-colors`
-                  : `inline-block text-black font-semibold underline underline-offset-4
-                     hover:text-gray-800 transition-colors`
+                    ? `inline-block font-semibold text-primary-foreground underline underline-offset-4 transition-opacity hover:opacity-80`
+                    : `inline-block font-semibold text-primary underline underline-offset-4 transition-opacity hover:opacity-80`
               }
               target={content.ctaLink.target ?? undefined}
               title={content.ctaLink.title ?? undefined}

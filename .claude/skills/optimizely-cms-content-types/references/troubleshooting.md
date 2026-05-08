@@ -11,6 +11,7 @@ Common issues and solutions when working with Optimizely CMS content types and R
 **Cause**: The property group names `content` and `settings` are built-in reserved tabs in Optimizely CMS. You cannot redefine them in `propertyGroups`.
 
 **❌ Wrong:**
+
 ```javascript
 propertyGroups: [
   { key: 'content', displayName: 'Content', sortOrder: 1 },   // ❌ Reserved!
@@ -19,6 +20,7 @@ propertyGroups: [
 ```
 
 **✅ Correct — only define custom (non-reserved) groups:**
+
 ```javascript
 propertyGroups: [
   { key: 'media', displayName: 'Media', sortOrder: 2 },
@@ -37,36 +39,32 @@ propertyGroups: [
 **Cause**: The `optimizely.config.mjs` file is incorrectly structured. The config must use `components` with **file paths as strings**, not directly imported content type objects.
 
 **❌ Wrong - importing objects directly:**
+
 ```javascript
 import { buildConfig } from '@optimizely/cms-sdk';
-import { ButtonElementCT } from './src/cms/content-types/elements/ButtonElement.ts';
 import { HeroBlockCT, HeroDisplayTemplate } from './src/cms/content-types/blocks/HeroBlock.ts';
+import { ButtonElementCT } from './src/cms/content-types/elements/ButtonElement.ts';
 
 export default buildConfig({
-  contentTypes: [ButtonElementCT, HeroBlockCT],  // ❌ WRONG!
-  displayTemplates: [HeroDisplayTemplate],       // ❌ WRONG!
-  propertyGroups: [
-    { key: 'media', displayName: 'Media', sortOrder: 2 },
-  ],
+  contentTypes: [ButtonElementCT, HeroBlockCT], // ❌ WRONG!
+  displayTemplates: [HeroDisplayTemplate], // ❌ WRONG!
+  propertyGroups: [{ key: 'media', displayName: 'Media', sortOrder: 2 }],
 });
 ```
 
 **✅ Correct - use file paths:**
+
 ```javascript
 import { buildConfig } from '@optimizely/cms-sdk';
 
 export default buildConfig({
-  components: [
-    './src/cms/content-types/elements/ButtonElement.ts',
-    './src/cms/content-types/blocks/HeroBlock.ts',
-  ],
-  propertyGroups: [
-    { key: 'media', displayName: 'Media', sortOrder: 2 },
-  ],
+  components: ['./src/cms/content-types/elements/ButtonElement.ts', './src/cms/content-types/blocks/HeroBlock.ts'],
+  propertyGroups: [{ key: 'media', displayName: 'Media', sortOrder: 2 }],
 });
 ```
 
 **Key points:**
+
 - Use `components` array with file path strings (not imports)
 - The CLI automatically discovers `contentType()` and `displayTemplate()` exports
 - Do NOT use `contentTypes` or `displayTemplates` arrays with imported objects
@@ -74,18 +72,19 @@ export default buildConfig({
 
 ---
 
-### "The base type '_element' is not supported"
+### "The base type '\_element' is not supported"
 
 **Error**: When pushing config to CMS, you get an error: `The base type '_element' is not supported.`
 
 **Cause**: There is no `_element` base type in Optimizely CMS. Elements are actually `_component` types with the `elementEnabled` composition behavior.
 
 **❌ Wrong:**
+
 ```typescript
 export const TextElementCT = contentType({
   key: 'TextElement',
   displayName: 'Text Element',
-  baseType: '_element',  // ❌ This base type does not exist!
+  baseType: '_element', // ❌ This base type does not exist!
   properties: {
     text: { type: 'string', displayName: 'Text' },
   },
@@ -93,12 +92,13 @@ export const TextElementCT = contentType({
 ```
 
 **✅ Correct:**
+
 ```typescript
 export const TextElementCT = contentType({
   key: 'TextElement',
   displayName: 'Text Element',
-  baseType: '_component',  // ✅ Use _component
-  compositionBehaviors: ['elementEnabled'],  // ✅ Add elementEnabled behavior
+  baseType: '_component', // ✅ Use _component
+  compositionBehaviors: ['elementEnabled'], // ✅ Add elementEnabled behavior
   properties: {
     text: { type: 'string', displayName: 'Text' },
   },
@@ -106,6 +106,7 @@ export const TextElementCT = contentType({
 ```
 
 **Key points:**
+
 - Elements use `baseType: '_component'`
 - Add `compositionBehaviors: ['elementEnabled']` to make it an element
 - You can also add `'sectionEnabled'` if you want the component to work as both
@@ -119,12 +120,14 @@ export const TextElementCT = contentType({
 **Cause**: Optimizely CMS restricts content types with `compositionBehaviors: ["elementEnabled"]` from having certain complex property types. Elements are meant to be simple, atomic components, not containers.
 
 **FORBIDDEN property types with `elementEnabled`:**
+
 1. ❌ Arrays with content: `type: "array"` with `items: { type: "content" }`
 2. ❌ Content properties: `type: "content"`
 3. ❌ Component properties: `type: "component"`
 4. ❌ JSON properties: `type: "json"`
 
 **ALLOWED property types with `elementEnabled`:**
+
 - ✅ Simple types: `string`, `boolean`, `integer`, `float`, `dateTime`, `url`, `richText`
 - ✅ Content references: `type: "contentReference"` (for images, media)
 - ✅ Arrays of simple types: `type: "array"` with `items: { type: "string" }` etc.
@@ -132,6 +135,7 @@ export const TextElementCT = contentType({
 **Solution options:**
 
 1. **Remove elementEnabled** - If the component needs to contain other content, keep only `sectionEnabled`:
+
    ```typescript
    compositionBehaviors: ["sectionEnabled"],  // Remove "elementEnabled"
    ```
@@ -139,6 +143,7 @@ export const TextElementCT = contentType({
 2. **Remove the array property** - If you want to keep it as an element, remove array properties with content items
 
 3. **Use JSON instead** - For simple data arrays (not content references), use `type: "json"`:
+
    ```typescript
    // ❌ Not allowed with elementEnabled
    items: {
@@ -159,14 +164,15 @@ export const TextElementCT = contentType({
 ```typescript
 // ❌ This will fail when syncing to CMS
 export const AccordionBlockType = contentType({
-  key: "AccordionBlock",
-  baseType: "_component",
-  compositionBehaviors: ["elementEnabled", "sectionEnabled"],  // Has elementEnabled
+  key: 'AccordionBlock',
+  baseType: '_component',
+  compositionBehaviors: ['elementEnabled', 'sectionEnabled'], // Has elementEnabled
   properties: {
-    items: {  // Array of content - NOT ALLOWED!
-      type: "array",
+    items: {
+      // Array of content - NOT ALLOWED!
+      type: 'array',
       items: {
-        type: "content",
+        type: 'content',
         allowedTypes: [AccordionItemType],
       },
     },
@@ -175,14 +181,15 @@ export const AccordionBlockType = contentType({
 
 // ✅ Fixed - removed elementEnabled
 export const AccordionBlockType = contentType({
-  key: "AccordionBlock",
-  baseType: "_component",
-  compositionBehaviors: ["sectionEnabled"],  // Only sectionEnabled
+  key: 'AccordionBlock',
+  baseType: '_component',
+  compositionBehaviors: ['sectionEnabled'], // Only sectionEnabled
   properties: {
-    items: {  // Now allowed
-      type: "array",
+    items: {
+      // Now allowed
+      type: 'array',
       items: {
-        type: "content",
+        type: 'content',
         allowedTypes: [AccordionItemType],
       },
     },
@@ -191,6 +198,7 @@ export const AccordionBlockType = contentType({
 ```
 
 **Quick check**: Search your codebase for files with both `elementEnabled` and array properties:
+
 ```bash
 grep -l "compositionBehaviors.*elementEnabled" src/components/*.tsx | xargs grep -l "items:"
 ```
@@ -204,13 +212,14 @@ grep -l "compositionBehaviors.*elementEnabled" src/components/*.tsx | xargs grep
 **Cause:** Incorrect import path for React server utilities.
 
 **✅ Correct import paths:**
+
 ```typescript
 // ❌ Wrong
-import { getPreviewUtils } from "@optimizely/cms-sdk/react";
+import { getPreviewUtils } from '@optimizely/cms-sdk/react';
 
 // ✅ Correct
-import { getPreviewUtils } from "@optimizely/cms-sdk/react/server";
-import { RichText } from "@optimizely/cms-sdk/react/richText";
+import { getPreviewUtils } from '@optimizely/cms-sdk/react/server';
+import { RichText } from '@optimizely/cms-sdk/react/richText';
 ```
 
 ### Property Type Name Casing
@@ -220,16 +229,17 @@ import { RichText } from "@optimizely/cms-sdk/react/richText";
 **Cause:** Property type names must use exact camelCase.
 
 **Common mistakes:**
+
 ```typescript
 // ❌ Wrong
-type: "richtext"  // lowercase
-type: "RichText"  // PascalCase
-type: "datetime"  // lowercase
+type: 'richtext'; // lowercase
+type: 'RichText'; // PascalCase
+type: 'datetime'; // lowercase
 
 // ✅ Correct
-type: "richText"  // camelCase
-type: "dateTime"  // camelCase
-type: "contentReference"  // camelCase
+type: 'richText'; // camelCase
+type: 'dateTime'; // camelCase
+type: 'contentReference'; // camelCase
 ```
 
 ### "Property X does not exist on type..."
@@ -237,6 +247,7 @@ type: "contentReference"  // camelCase
 This is the most common error when a property is used in your React component but not defined in the content type schema.
 
 **Solution workflow:**
+
 1. Check if the property is used in the component code
 2. Add it to the `contentType()` definition with the correct type
 3. For special types (URL, boolean, numeric), add proper type guards in the component
@@ -244,29 +255,30 @@ This is the most common error when a property is used in your React component bu
 5. Register any new content types in `layout.tsx`
 
 **Example:**
+
 ```typescript
 // ❌ Error: Property 'cta' does not exist
 export const CardBlockType = contentType({
-  key: "CardBlock",
-  baseType: "_component",
+  key: 'CardBlock',
+  baseType: '_component',
   properties: {
-    heading: { type: "string", displayName: "Heading" },
+    heading: { type: 'string', displayName: 'Heading' },
     // Missing 'cta' property!
   },
 });
 
 // ✅ Fixed
-import { CtaBlockType } from "./CtaBlock";
+import { CtaBlockType } from './CtaBlock';
 
 export const CardBlockType = contentType({
-  key: "CardBlock",
-  baseType: "_component",
+  key: 'CardBlock',
+  baseType: '_component',
   properties: {
-    heading: { type: "string", displayName: "Heading" },
+    heading: { type: 'string', displayName: 'Heading' },
     cta: {
-      type: "content",
-      displayName: "Call to Action",
-      description: "Optional CTA button",
+      type: 'content',
+      displayName: 'Call to Action',
+      description: 'Optional CTA button',
       allowedTypes: [CtaBlockType],
     },
   },
@@ -282,16 +294,18 @@ export const CardBlockType = contentType({
 **Cause:** Display template settings use a different structure than property definitions.
 
 **❌ Wrong:**
+
 ```typescript
 export const MyDisplayTemplate = displayTemplate({
-  key: "MyDisplayTemplate",
+  key: 'MyDisplayTemplate',
   isDefault: true,
   settings: {
     alignment: {
-      type: "select",  // ❌ 'type' is wrong
-      label: "Alignment",
-      options: [  // ❌ 'options' is wrong
-        { value: "left", label: "Left" },
+      type: 'select', // ❌ 'type' is wrong
+      label: 'Alignment',
+      options: [
+        // ❌ 'options' is wrong
+        { value: 'left', label: 'Left' },
       ],
     },
   },
@@ -299,24 +313,26 @@ export const MyDisplayTemplate = displayTemplate({
 ```
 
 **✅ Correct:**
+
 ```typescript
 export const MyDisplayTemplate = displayTemplate({
-  key: "MyDisplayTemplate",
+  key: 'MyDisplayTemplate',
   isDefault: true,
-  displayName: "My Display Template",
-  baseType: "_component",
+  displayName: 'My Display Template',
+  baseType: '_component',
   settings: {
     alignment: {
-      editor: "select",  // ✅ Use 'editor', not 'type'
-      displayName: "Alignment",  // ✅ Use 'displayName', not 'label'
-      sortOrder: 0,  // ✅ Required
-      choices: {  // ✅ Use 'choices' object, not 'options' array
+      editor: 'select', // ✅ Use 'editor', not 'type'
+      displayName: 'Alignment', // ✅ Use 'displayName', not 'label'
+      sortOrder: 0, // ✅ Required
+      choices: {
+        // ✅ Use 'choices' object, not 'options' array
         left: {
-          displayName: "Left",
+          displayName: 'Left',
           sortOrder: 0,
         },
         center: {
-          displayName: "Center",
+          displayName: 'Center',
           sortOrder: 10,
         },
       },
@@ -326,6 +342,7 @@ export const MyDisplayTemplate = displayTemplate({
 ```
 
 **Key differences for display templates:**
+
 - Use `editor: "select"` or `editor: "checkbox"` (not `type`)
 - Use `displayName` (not `label`)
 - Use `choices: { key: { displayName, sortOrder } }` (not `options: []`)
@@ -339,11 +356,13 @@ export const MyDisplayTemplate = displayTemplate({
 **Cause:** The `RichText` component from the SDK doesn't accept a `className` prop.
 
 **❌ Wrong:**
+
 ```typescript
 <RichText content={opti.content?.json} className="prose" />
 ```
 
 **✅ Correct - Wrap in a div:**
+
 ```typescript
 <div className="prose prose-lg">
   <RichText content={opti.content?.json} />
@@ -355,6 +374,7 @@ export const MyDisplayTemplate = displayTemplate({
 When using Tailwind's prose plugin, be careful with color modifiers:
 
 **❌ Poor contrast in light mode:**
+
 ```typescript
 <div className="prose prose-invert prose-lg">
   <RichText content={opti.content?.json} />
@@ -362,6 +382,7 @@ When using Tailwind's prose plugin, be careful with color modifiers:
 ```
 
 **✅ Good for light mode:**
+
 ```typescript
 <div className="prose prose-lg">
   <RichText content={opti.content?.json} />
@@ -369,6 +390,7 @@ When using Tailwind's prose plugin, be careful with color modifiers:
 ```
 
 **✅ Adaptive (dark mode support):**
+
 ```typescript
 <div className="prose prose-lg dark:prose-invert">
   <RichText content={opti.content?.json} />
@@ -380,6 +402,7 @@ When using Tailwind's prose plugin, be careful with color modifiers:
 ### Numeric Types
 
 **❌ Wrong:**
+
 ```typescript
 overlayOpacity: {
   type: "number",  // 'number' is not a valid type!
@@ -387,6 +410,7 @@ overlayOpacity: {
 ```
 
 **✅ Correct:**
+
 ```typescript
 overlayOpacity: {
   type: "integer",  // Use 'integer' or 'float'
@@ -400,6 +424,7 @@ overlayOpacity: {
 The SDK does NOT support `default` values in property definitions.
 
 **❌ Wrong:**
+
 ```typescript
 allowMultiple: {
   type: "boolean",
@@ -409,6 +434,7 @@ allowMultiple: {
 ```
 
 **✅ Correct:**
+
 ```typescript
 // 1. Remove default from schema
 allowMultiple: {
@@ -446,17 +472,20 @@ items: {
 URL properties return `InferredUrl` objects, not strings. Access the string value via `.default`:
 
 **❌ Wrong:**
+
 ```typescript
 <Link href={opti.url}>...</Link>
 // Error: Type 'InferredUrl' is not assignable to type 'Url'
 ```
 
 **✅ Correct:**
+
 ```typescript
 <Link href={opti.url?.default || "#"}>...</Link>
 ```
 
 **For video/iframe src:**
+
 ```typescript
 <iframe src={opti.embedUrl?.default || ""} />
 ```
@@ -466,12 +495,14 @@ URL properties return `InferredUrl` objects, not strings. Access the string valu
 Boolean properties can be `true | false | null`, not just `true | false | undefined`.
 
 **❌ Wrong:**
+
 ```typescript
 <video autoPlay={opti.autoplay} />
 // Error: Type 'boolean | null' is not assignable to type 'boolean | undefined'
 ```
 
 **✅ Correct:**
+
 ```typescript
 <video autoPlay={opti.autoplay === true} />
 ```
@@ -481,6 +512,7 @@ Boolean properties can be `true | false | null`, not just `true | false | undefi
 When using `type: "json"` for arrays, you must cast the type in your component:
 
 **1. Define the TypeScript type:**
+
 ```typescript
 type ContactInfo = {
   type: string;
@@ -490,6 +522,7 @@ type ContactInfo = {
 ```
 
 **2. Add property to content type:**
+
 ```typescript
 contactInfo: {
   type: "json",
@@ -499,6 +532,7 @@ contactInfo: {
 ```
 
 **3. Use with type guards and casting:**
+
 ```typescript
 {opti.contactInfo && Array.isArray(opti.contactInfo) && opti.contactInfo.length > 0 && (
   <div>
@@ -537,14 +571,15 @@ When mapping over content arrays, the items may need explicit type casting:
 Some components require both a container and item content type (e.g., AccordionBlock + AccordionItem).
 
 **1. Create the item component:**
+
 ```typescript
 // AccordionItem.tsx
 export const AccordionItemType = contentType({
-  key: "AccordionItem",
-  baseType: "_component",
+  key: 'AccordionItem',
+  baseType: '_component',
   properties: {
-    question: { type: "string", displayName: "Question" },
-    answer: { type: "string", displayName: "Answer" },
+    question: { type: 'string', displayName: 'Question' },
+    answer: { type: 'string', displayName: 'Answer' },
   },
 });
 
@@ -555,18 +590,19 @@ export default function AccordionItem({ opti }: Props) {
 ```
 
 **2. Reference it in the container:**
+
 ```typescript
 // AccordionBlock.tsx
-import { AccordionItemType } from "./AccordionItem";
+import { AccordionItemType } from './AccordionItem';
 
 export const AccordionBlockType = contentType({
-  key: "AccordionBlock",
-  baseType: "_component",
+  key: 'AccordionBlock',
+  baseType: '_component',
   properties: {
     items: {
-      type: "array",
+      type: 'array',
       items: {
-        type: "content",
+        type: 'content',
         allowedTypes: [AccordionItemType],
       },
     },
@@ -575,47 +611,48 @@ export const AccordionBlockType = contentType({
 ```
 
 **3. Register BOTH in layout.tsx:**
+
 ```typescript
-import AccordionBlock, { AccordionBlockType } from "@/components/AccordionBlock";
-import AccordionItem, { AccordionItemType } from "@/components/AccordionItem";
+import AccordionBlock, { AccordionBlockType } from '@/components/AccordionBlock';
+import AccordionItem, { AccordionItemType } from '@/components/AccordionItem';
 
 initContentTypeRegistry([
   AccordionBlockType,
-  AccordionItemType,  // Don't forget this!
+  AccordionItemType, // Don't forget this!
 ]);
 
 initReactComponentRegistry({
   resolver: {
     AccordionBlock,
-    AccordionItem,  // And this!
+    AccordionItem, // And this!
   },
 });
 ```
 
 ## Common Type Patterns Quick Reference
 
-| Scenario | Solution |
-|----------|----------|
-| URL for Link href | `opti.url?.default \|\| "#"` |
-| URL for iframe src | `opti.embedUrl?.default \|\| ""` |
-| Boolean for HTML attrs | `opti.autoplay === true` |
-| JSON array | `Array.isArray(opti.items) && (opti.items as MyType[]).map(...)` |
-| Content array items | `item as unknown as Infer<typeof ItemType>` |
-| Numeric types | Use `"integer"` or `"float"`, NOT `"number"` |
-| Default values | Handle in component, NOT in schema |
-| Null checks | `opti.value !== null && opti.value !== undefined` |
+| Scenario               | Solution                                                         |
+| ---------------------- | ---------------------------------------------------------------- |
+| URL for Link href      | `opti.url?.default \|\| "#"`                                     |
+| URL for iframe src     | `opti.embedUrl?.default \|\| ""`                                 |
+| Boolean for HTML attrs | `opti.autoplay === true`                                         |
+| JSON array             | `Array.isArray(opti.items) && (opti.items as MyType[]).map(...)` |
+| Content array items    | `item as unknown as Infer<typeof ItemType>`                      |
+| Numeric types          | Use `"integer"` or `"float"`, NOT `"number"`                     |
+| Default values         | Handle in component, NOT in schema                               |
+| Null checks            | `opti.value !== null && opti.value !== undefined`                |
 
 ## Property Type Cheat Sheet
 
-| What You Need | Type to Use | Example |
-|---------------|-------------|---------|
-| Number field | `"integer"` or `"float"` | Rating, price, quantity |
-| Simple URL | `"url"` | External link |
-| Rich link | `"link"` | Link with text + target |
-| Simple data array | `"json"` | Contact info, stats |
-| Content array | `"array"` with `items: { type: "content" }` | Related articles |
-| Single content | `"content"` | Featured image |
-| Typed component | `"component"` with `contentType: MyType` | SEO block |
+| What You Need     | Type to Use                                 | Example                 |
+| ----------------- | ------------------------------------------- | ----------------------- |
+| Number field      | `"integer"` or `"float"`                    | Rating, price, quantity |
+| Simple URL        | `"url"`                                     | External link           |
+| Rich link         | `"link"`                                    | Link with text + target |
+| Simple data array | `"json"`                                    | Contact info, stats     |
+| Content array     | `"array"` with `items: { type: "content" }` | Related articles        |
+| Single content    | `"content"`                                 | Featured image          |
+| Typed component   | `"component"` with `contentType: MyType`    | SEO block               |
 
 ## When to Use Each Content Property Type
 
@@ -624,6 +661,7 @@ initReactComponentRegistry({
 Both reference other content, but with different purposes:
 
 **Use `"contentReference"`** for media and assets:
+
 ```typescript
 featuredImage: {
   type: "contentReference",
@@ -633,6 +671,7 @@ featuredImage: {
 ```
 
 **Use `"content"`** for components and content blocks:
+
 ```typescript
 hero: {
   type: "content",
@@ -666,39 +705,36 @@ seo: {
 **Solution**: Create an SDK initialization file and import it in your root layout:
 
 **1. Create `src/optimizely.ts`:**
+
 ```typescript
-import {
-  initContentTypeRegistry,
-  initDisplayTemplateRegistry,
-  BlankExperienceContentType,
-  BlankSectionContentType,
-} from '@optimizely/cms-sdk';
+import { BlankExperienceContentType, BlankSectionContentType, initContentTypeRegistry, initDisplayTemplateRegistry } from '@optimizely/cms-sdk';
 import { initReactComponentRegistry } from '@optimizely/cms-sdk/react/server';
-
-// Import your content types
-import * as contentTypes from '@/src/cms/content-types';
-
+import { HeroBlock } from '@/components/cms/blocks/HeroBlock';
 // Import your React components
 import BlankExperience from '@/components/cms/experiences/BlankExperience';
 import BlankSection from '@/components/cms/experiences/BlankSection';
-import { HeroBlock } from '@/components/cms/blocks/HeroBlock';
+// Import your content types
+import * as contentTypes from '@/src/cms/content-types';
+
 // ... other component imports
 
 // Initialize content type registry - MUST include BlankExperience and BlankSection
 initContentTypeRegistry([
-  BlankExperienceContentType,  // Required for Visual Builder!
-  BlankSectionContentType,     // Required for Visual Builder!
+  BlankExperienceContentType, // Required for Visual Builder!
+  BlankSectionContentType, // Required for Visual Builder!
   ...Object.values(contentTypes),
 ]);
 
 // Initialize display templates
-initDisplayTemplateRegistry([/* your display templates */]);
+initDisplayTemplateRegistry([
+  /* your display templates */
+]);
 
 // Initialize React component registry
 initReactComponentRegistry({
   resolver: {
-    BlankExperience,  // Required for Visual Builder!
-    BlankSection,     // Required for Visual Builder!
+    BlankExperience, // Required for Visual Builder!
+    BlankSection, // Required for Visual Builder!
     HeroBlock,
     // ... other components
   },
@@ -708,6 +744,7 @@ initReactComponentRegistry({
 **2. Create experience components:**
 
 **`components/cms/experiences/BlankExperience.tsx`:**
+
 ```typescript
 import { BlankExperienceContentType, Infer } from '@optimizely/cms-sdk';
 import {
@@ -738,6 +775,7 @@ export default function BlankExperience({ opti }: Props) {
 ```
 
 **`components/cms/experiences/BlankSection.tsx`:**
+
 ```typescript
 import { BlankSectionContentType, Infer } from '@optimizely/cms-sdk';
 import {
@@ -773,8 +811,11 @@ function Column({ children, node }: StructureContainerProps) {
 ```
 
 **3. Import in root layout (`app/layout.tsx`):**
+
 ```typescript
-import '@/src/optimizely';  // Initialize before any CMS content renders
+import '@/src/optimizely';
+
+// Initialize before any CMS content renders
 ```
 
 ---
@@ -788,6 +829,7 @@ import '@/src/optimizely';  // Initialize before any CMS content renders
 **Solution**: Create a preview page that uses the SDK's preview components:
 
 **`app/preview/page.tsx`:**
+
 ```typescript
 import { GraphClient, type PreviewParams } from '@optimizely/cms-sdk';
 import { OptimizelyComponent } from '@optimizely/cms-sdk/react/server';
@@ -822,6 +864,7 @@ export default async function PreviewPage({ searchParams }: Props) {
 ```
 
 **Key components:**
+
 - `OptimizelyComponent` - renders content using registered components
 - `PreviewComponent` - enables Visual Builder client-side features
 - Communication injector script - enables Visual Builder ↔ preview communication
@@ -833,6 +876,7 @@ export default async function PreviewPage({ searchParams }: Props) {
 **Cause**: Missing communication injector script or incorrect environment variables.
 
 **Check:**
+
 1. Ensure `OPTIMIZELY_CMS_URL` is set (e.g., `https://app-xxx.cms.optimizely.com`)
 2. Ensure `OPTIMIZELY_GRAPH_GATEWAY` includes the full path: `https://cg.optimizely.com/content/v2`
 3. Verify the communication injector script is loaded in the preview page
@@ -844,6 +888,7 @@ export default async function PreviewPage({ searchParams }: Props) {
 **Cause**: Using viewport-based height classes like `min-h-screen` or `min-h-[90vh]` in components. The Visual Builder preview renders in an iframe with its own viewport, causing these classes to create unexpected infinite scrolling behavior.
 
 **❌ Avoid in CMS components:**
+
 ```typescript
 // These cause issues in Visual Builder preview
 <div className="min-h-screen ...">
@@ -852,6 +897,7 @@ export default async function PreviewPage({ searchParams }: Props) {
 ```
 
 **✅ Use instead:**
+
 ```typescript
 // Let content determine height with padding
 <div className="py-20 ...">
@@ -872,6 +918,7 @@ export default async function PreviewPage({ searchParams }: Props) {
 **Cause**: The `pa()` function adds `data-epi-property-name` attributes. The CMS injects interactive hover overlays on these elements for in-context editing. When applied to a full-bleed or absolutely-positioned container (like a background image wrapper), the overlay covers the entire component.
 
 **❌ Wrong:**
+
 ```typescript
 {hasBackground && (
   <div className="absolute inset-0 -z-10" {...pa('backgroundImage')}>
@@ -881,6 +928,7 @@ export default async function PreviewPage({ searchParams }: Props) {
 ```
 
 **✅ Correct — omit `pa()` on background containers:**
+
 ```typescript
 {hasBackground && (
   <div className="absolute inset-0 -z-10">
@@ -904,6 +952,7 @@ export default async function PreviewPage({ searchParams }: Props) {
 3. **No variation filter needed**: Basic content fetching works without locale filtering
 
 **❌ Wrong:**
+
 ```typescript
 // Missing trailing slash
 const content = await client.getContentByPath('/en');
@@ -913,6 +962,7 @@ const content = await client.getContentByPath('/');
 ```
 
 **✅ Correct:**
+
 ```typescript
 // Full path with trailing slash
 const content = await client.getContentByPath(`/${slug.join('/')}/`);
@@ -939,13 +989,13 @@ The SDK has different inferred types for different scenarios:
 
 ```typescript
 // For contentReference properties (images, media)
-featuredImage: InferredContentReference | null
+featuredImage: InferredContentReference | null;
 
 // For url properties
-websiteUrl: InferredUrl | null
+websiteUrl: InferredUrl | null;
 
 // Access the actual URL from InferredUrl
-const url = opti.websiteUrl?.default || "";
+const url = opti.websiteUrl?.default || '';
 
 // Access image URL from contentReference
 const imageUrl = opti.featuredImage?.url;

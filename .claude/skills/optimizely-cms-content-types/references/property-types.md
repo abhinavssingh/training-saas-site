@@ -28,7 +28,7 @@ title: {
   type: 'string',
   displayName: 'Title',
   description: 'Help text for editors',
-  required: false,
+  isRequired: false,
   localized: false,
   minLength: 0,
   maxLength: 255,
@@ -41,6 +41,7 @@ title: {
 ```
 
 **Unique options:**
+
 - `minLength?: number`
 - `maxLength?: number`
 - `pattern?: string` - Regex pattern
@@ -57,8 +58,8 @@ body: {
   type: 'richText',
   displayName: 'Article Body',
   description: 'Full rich text editing',
-  required: false,
-  localized: true,
+  isRequired: false,
+  isLocalized: true,
 }
 ```
 
@@ -73,7 +74,7 @@ websiteUrl: {
   type: 'url',
   displayName: 'Website URL',
   description: 'External website link',
-  required: false,
+  isRequired: false,
 }
 ```
 
@@ -88,7 +89,7 @@ ctaLink: {
   type: 'link',
   displayName: 'Call to Action Link',
   description: 'Link with title and target options',
-  required: false,
+  isRequired: false,
 }
 ```
 
@@ -128,6 +129,7 @@ quantity: {
 ```
 
 **Unique options:**
+
 - `minimum?: number`
 - `maximum?: number`
 - `enum?: { value: number; displayName: string }[]`
@@ -148,6 +150,7 @@ price: {
 ```
 
 **Unique options:**
+
 - `minimum?: number`
 - `maximum?: number`
 - `enum?: { value: number; displayName: string }[]`
@@ -162,7 +165,7 @@ Date and time values with optional constraints.
 publishDate: {
   type: 'dateTime',
   displayName: 'Publish Date',
-  required: true,
+  isRequired: true,
 }
 
 eventStartTime: {
@@ -174,6 +177,7 @@ eventStartTime: {
 ```
 
 **Unique options:**
+
 - `minimum?: string` - Earliest allowed (ISO 8601)
 - `maximum?: string` - Latest allowed (ISO 8601)
 
@@ -193,7 +197,7 @@ If your component needs to contain arrays of other content (like AccordionBlock 
 tags: {
   type: 'array',
   displayName: 'Tags',
-  items: { 
+  items: {
     type: 'string',
     maxLength: 50,
   },
@@ -230,6 +234,7 @@ featuredImages: {
 ```
 
 **Unique options:**
+
 - `items: PropertyType` - Required: type of array items
 - `minItems?: number`
 - `maxItems?: number`
@@ -252,6 +257,7 @@ featuredImage: {
 ```
 
 **Unique options:**
+
 - `allowedTypes?: Array<ContentType | string>`
 - `restrictedTypes?: Array<ContentType | string>`
 
@@ -271,6 +277,7 @@ heroSection: {
 ```
 
 **Unique options:**
+
 - `allowedTypes?: Array<ContentType | string>`
 - `restrictedTypes?: Array<ContentType | string>`
 
@@ -299,10 +306,10 @@ hero: {
 ```
 
 **Unique options:**
+
 - `contentType: ContentType` - Required: specific content type
 
 **Use for:** When you need a specific block type, type-safe embedding
-
 
 ## Binary Property
 
@@ -332,8 +339,7 @@ metadata: {
 
 **Use for:** Structured metadata, configuration data, flexible data storage
 
-**⚠️ IMPORTANT RESTRICTION**: Content types with `elementEnabled` **CANNOT** have properties that are of  type `json`. Elements are meant to be simple, atomic components, not containers.
-
+**⚠️ IMPORTANT RESTRICTION**: Content types with `elementEnabled` **CANNOT** have properties that are of type `json`. Elements are meant to be simple, atomic components, not containers.
 
 ## Indexing Types
 
@@ -348,6 +354,7 @@ Controls how properties are indexed for search. **Default is 'searchable'.**
 ```
 
 **Options:**
+
 - **`'searchable'`** (default) - Fully indexed for full-text search
 - **`'queryable'`** - Can be filtered/sorted but not full-text searched
 - **`'disabled'`** - Not indexed at all
@@ -388,6 +395,7 @@ relatedContent: {
 ```
 
 **AllowedTypes options:**
+
 - Specific content types: `[ArticleCT, VideoCT]`
 - Base types: `['_page', '_component', '_image']`
 - Self-reference: `['_self']`
@@ -470,8 +478,8 @@ export const ArticlePageCT = contentType({
       type: 'string',
       displayName: 'Article Title',
       description: 'The main title',
-      required: true,
-      localized: true,
+      isRequired: true,
+      isLocalized: true,
       group: 'content',
       sortOrder: 10,
       minLength: 10,
@@ -482,8 +490,8 @@ export const ArticlePageCT = contentType({
     body: {
       type: 'richText',
       displayName: 'Article Body',
-      required: true,
-      localized: true,
+      isRequired: true,
+      isLocalized: true,
       group: 'content',
       sortOrder: 20,
     },
@@ -533,7 +541,7 @@ export const ArticlePageCT = contentType({
     publishDate: {
       type: 'dateTime',
       displayName: 'Publish Date',
-      required: true,
+      isRequired: true,
       group: 'scheduling',
       sortOrder: 80,
       indexingType: 'queryable',
@@ -544,19 +552,19 @@ export const ArticlePageCT = contentType({
 
 ## Summary of Property Types
 
-| Type | Description | Example Use |
-|------|-------------|-------------|
-| `string` | Simple text | Titles, names, labels |
-| `richText` | Formatted content | Article bodies, descriptions |
-| `url` | Simple web address | Website links, external URLs |
-| `link` | Rich link with metadata | CTAs, navigation links |
-| `boolean` | True/false | Flags, toggles |
-| `integer` | Whole number | Counts, limits, rankings |
-| `float` | Decimal number | Prices, ratings |
-| `dateTime` | Date and time | Publish dates, events |
-| `array` | List of items | Tags, galleries, lists |
-| `contentReference` | Content reference | Images, linked pages |
-| `content` | Embedded content | Nested blocks |
-| `component` | Specific component | Strongly-typed blocks |
-| `binary` | Binary data | File uploads |
-| `json` | JSON data | Metadata, config |
+| Type               | Description             | Example Use                  |
+| ------------------ | ----------------------- | ---------------------------- |
+| `string`           | Simple text             | Titles, names, labels        |
+| `richText`         | Formatted content       | Article bodies, descriptions |
+| `url`              | Simple web address      | Website links, external URLs |
+| `link`             | Rich link with metadata | CTAs, navigation links       |
+| `boolean`          | True/false              | Flags, toggles               |
+| `integer`          | Whole number            | Counts, limits, rankings     |
+| `float`            | Decimal number          | Prices, ratings              |
+| `dateTime`         | Date and time           | Publish dates, events        |
+| `array`            | List of items           | Tags, galleries, lists       |
+| `contentReference` | Content reference       | Images, linked pages         |
+| `content`          | Embedded content        | Nested blocks                |
+| `component`        | Specific component      | Strongly-typed blocks        |
+| `binary`           | Binary data             | File uploads                 |
+| `json`             | JSON data               | Metadata, config             |

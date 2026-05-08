@@ -1,3 +1,3 @@
-export { default as Header } from "./Header";
-export { default as Footer } from "./Footer";
-export { default as Logo } from "./Logo";
+export { default as Header } from '../blocks/header/Header';
+export { default as Footer } from '../blocks/footer/Footer';
+export { default as Logo } from './Logo';

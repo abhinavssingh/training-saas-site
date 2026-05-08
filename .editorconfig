@@ -1,0 +1,76 @@
+# Top-most EditorConfig file
+root = true
+
+# ------------------------------------------------------------------------------
+# Global defaults
+# ------------------------------------------------------------------------------
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+max_line_length = 100
+
+# ------------------------------------------------------------------------------
+# JavaScript / TypeScript / JSX / TSX (Next.js core)
+# ------------------------------------------------------------------------------
+
+[*.{js,jsx,ts,tsx}]
+indent_style = space
+indent_size = 2
+max_line_length = 100
+
+# Allow long Tailwind class strings and JSX props to wrap naturally
+continuation_indent_size = 2
+
+# ------------------------------------------------------------------------------
+# JSON (package.json, tsconfig.json, etc.)
+# ------------------------------------------------------------------------------
+
+[*.json]
+indent_style = space
+indent_size = 2
+
+# ------------------------------------------------------------------------------
+# YAML (CI files, workflows)
+# ------------------------------------------------------------------------------
+
+[*.{yml,yaml}]
+indent_style = space
+indent_size = 2
+
+# ------------------------------------------------------------------------------
+# Markdown (docs, README, guidelines)
+# ------------------------------------------------------------------------------
+
+[*.md]
+trim_trailing_whitespace = false
+max_line_length = off
+
+# ------------------------------------------------------------------------------
+# CSS / PostCSS (Tailwind v4 CSS-first setup)
+# ------------------------------------------------------------------------------
+
+[*.css]
+indent_style = space
+indent_size = 2
+max_line_length = off
+
+# ------------------------------------------------------------------------------
+# Shell / scripts
+# ------------------------------------------------------------------------------
+
+[*.sh]
+indent_style = space
+indent_size = 2
+
+# ------------------------------------------------------------------------------
+# Dotfiles
+# ------------------------------------------------------------------------------
+
+[.*rc]
+indent_style = space
+indent_size = 2

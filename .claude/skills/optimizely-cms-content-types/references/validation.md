@@ -47,28 +47,33 @@ Common validation patterns for Optimizely CMS properties.
 ## Common Regex Patterns
 
 ### Email
+
 ```typescript
-pattern: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'
+pattern: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$';
 ```
 
 ### URL Slug (kebab-case)
+
 ```typescript
-pattern: '^[a-z0-9]+(?:-[a-z0-9]+)*$'
+pattern: '^[a-z0-9]+(?:-[a-z0-9]+)*$';
 ```
 
 ### Hex Color
+
 ```typescript
-pattern: '^#[0-9A-Fa-f]{6}$'
+pattern: '^#[0-9A-Fa-f]{6}$';
 ```
 
 ### Phone (US)
+
 ```typescript
-pattern: '^\\+?1?\\s*\\(?([0-9]{3})\\)?[-\\s.]?([0-9]{3})[-\\s.]?([0-9]{4})$'
+pattern: '^\\+?1?\\s*\\(?([0-9]{3})\\)?[-\\s.]?([0-9]{3})[-\\s.]?([0-9]{4})$';
 ```
 
 ### Alphanumeric Only
+
 ```typescript
-pattern: '^[A-Za-z0-9]+$'
+pattern: '^[A-Za-z0-9]+$';
 ```
 
 ## Display Template Choice Keys

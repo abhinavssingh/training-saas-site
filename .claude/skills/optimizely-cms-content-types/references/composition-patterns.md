@@ -10,12 +10,15 @@ Make components work in Visual Builder:
 export const CardBlockCT = contentType({
   key: 'CardBlock',
   baseType: '_component',
-  compositionBehaviors: ['sectionEnabled', 'elementEnabled'],  // Both!
-  properties: { /* ... */ },
+  compositionBehaviors: ['sectionEnabled', 'elementEnabled'], // Both!
+  properties: {
+    /* ... */
+  },
 });
 ```
 
 **Options:**
+
 - `'sectionEnabled'` - Works as section
 - `'elementEnabled'` - Works as element
 - Both - Maximum flexibility
@@ -30,9 +33,9 @@ export const BlogPageCT = contentType({
   baseType: '_page',
   mayContainTypes: [
     ArticleCT,
-    '_page',     // All pages
-    '_self',     // Same type
-    '*',         // All types (wildcard)
+    '_page', // All pages
+    '_self', // Same type
+    '*', // All types (wildcard)
   ],
 });
 ```
@@ -58,7 +61,7 @@ properties: {
   contentSections: {
     type: 'array',
     displayName: 'Content Sections',
-    items: { 
+    items: {
       type: 'content',
       allowedTypes: ['HeroBlock', 'CardBlock'],
     },
@@ -104,8 +107,8 @@ export const AccordionItemCT = contentType({
   key: 'AccordionItem',
   baseType: '_component',
   properties: {
-    heading: { type: 'string', required: true },
-    content: { type: 'richText', required: true },
+    heading: { type: 'string', isRequired: true },
+    content: { type: 'richText', isRequired: true },
   },
 });
 ```
@@ -125,6 +128,7 @@ relatedContent: {
 ```
 
 **Options:**
+
 - Specific types: `[ArticleCT]`
 - Base types: `['_page', '_component']`
 - Self: `['_self']`
@@ -233,6 +237,7 @@ function Column({ children, node }: StructureContainerProps) {
 ```
 
 **Key styling patterns:**
+
 - **Section**: Full-width with responsive padding and centered max-width container
 - **Row**: Flex row with gaps between columns, stacks multiple rows vertically
 - **Column**: Equal-width columns (`flex-1`) that contain elements, `min-w-0` prevents overflow

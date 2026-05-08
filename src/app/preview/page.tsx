@@ -1,20 +1,17 @@
 import { GraphClient, type PreviewParams } from '@optimizely/cms-sdk';
-import { OptimizelyComponent } from '@optimizely/cms-sdk/react/server';
+import { getClient } from '@optimizely/cms-sdk';
 import { PreviewComponent } from '@optimizely/cms-sdk/react/client';
-import { getGraphGatewayUrl } from '@/lib/config';
-import PreviewError from '@/components/layout/PreviewError';
+import { OptimizelyComponent, withAppContext } from '@optimizely/cms-sdk/react/server';
 import Script from 'next/script';
-
+import PreviewError from '@/components/layout/PreviewError';
 
 type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-export default async function Page({ searchParams }: Props) {
+export async function Page({ searchParams }: Props) {
   const params = await searchParams;
-  const client = new GraphClient(process.env.OPTIMIZELY_GRAPH_SINGLE_KEY!, {
-    graphUrl: getGraphGatewayUrl(),
-  });
+  const client = getClient();
 
   let response;
   let error: unknown = null;
@@ -28,8 +25,7 @@ export default async function Page({ searchParams }: Props) {
     } catch (err: unknown) {
       error = err;
       const isNotYetIndexed =
-        err instanceof Error &&
-        err.message.includes('No content found for key');
+        err instanceof Error && err.message.includes('No content found for key');
       if (isNotYetIndexed && attempt < maxRetries) {
         await new Promise((resolve) => setTimeout(resolve, 200));
         continue;
@@ -46,10 +42,13 @@ export default async function Page({ searchParams }: Props) {
     <div>
       <Script
         src={`${process.env.OPTIMIZELY_CMS_URL}/util/javascript/communicationinjector.js`}
-        strategy="afterInteractive"
-      ></Script>
+        strategy="beforeInteractive"
+        id="optimizely-communication-injector"
+      />
       <PreviewComponent />
       <OptimizelyComponent content={response} />
     </div>
   );
 }
+
+export default withAppContext(Page);

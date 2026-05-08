@@ -13,10 +13,13 @@
     "cms:login": "npx @optimizely/cms-cli@latest login",
     "cms:push-config": "npx @optimizely/cms-cli@latest config push ./optimizely.config.mjs",
     "cms:push-config-force": "npx @optimizely/cms-cli@latest config push ./optimizely.config.mjs --force",
-    "cms:pull-config": "npx @optimizely/cms-cli@latest config pull --output ./content-types.json"
+    "cms:pull-config": "npx @optimizely/cms-cli@latest config pull --output ./content-types.json",
+    "format": "prettier --write ."
   },
   "dependencies": {
-    "@optimizely/cms-sdk": "^1.0.0",
+    "@headlessui/react": "^2.2.10",
+    "@optimizely/cms-cli": "^2.0.0",
+    "@optimizely/cms-sdk": "^2.0.0",
     "@tailwindcss/typography": "^0.5.19",
     "next": "16.1.6",
     "react": "19.2.3",
@@ -24,11 +27,15 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@trivago/prettier-plugin-sort-imports": "^6.0.2",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.8.3",
+    "prettier-plugin-tailwindcss": "^0.8.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

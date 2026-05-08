@@ -12,6 +12,7 @@ Deploy and manage Next.js applications on Optimizely Frontend Hosting for CMS (S
 Optimizely Frontend Hosting is a cloud-based solution for deploying headless Next.js applications with an Optimizely CMS (SaaS) backend. It provides managed environments (Test1, Test2, Production) with built-in CDN and WAF powered by Cloudflare.
 
 **Key characteristics:**
+
 - Next.js support only (SSG and SSR, ISR not yet supported)
 - Managed environments integrated with CMS (SaaS)
 - Automatic CDN and WAF configuration
@@ -20,6 +21,7 @@ Optimizely Frontend Hosting is a cloud-based solution for deploying headless Nex
 ## Workflow Decision Tree
 
 **User says "Set up frontend hosting":**
+
 1. Check if environment variables exist in project
 2. If missing, read `references/environment-variables.md` for guidance
 3. Create `.env` file with required variables
@@ -28,17 +30,20 @@ Optimizely Frontend Hosting is a cloud-based solution for deploying headless Nex
 6. Guide user on obtaining API credentials from PaaS Portal
 
 **User says "Deploy to frontend hosting":**
+
 1. Read `references/deployment-guide.md` for detailed process
 2. Use `scripts/deploy.ps1` for automated deployment
 3. Or guide through manual PowerShell deployment steps
 4. Monitor deployment status
 
 **User says "Configure deployment settings":**
+
 1. Check current environment variables
 2. Read `references/environment-variables.md` for details
 3. Use `scripts/setup-env.ps1` to configure variables
 
 **User encounters deployment errors:**
+
 1. Read `references/troubleshooting.md` for common issues
 2. Check deployment logs
 3. Verify package naming and structure
@@ -64,6 +69,7 @@ For permanent setup, use `scripts/setup-env.ps1` or add to system environment va
 Ensure the Next.js project has:
 
 1. **package.json** with required scripts:
+
 ```json
 {
   "scripts": {
@@ -95,6 +101,7 @@ For automated deployment, use the provided script:
 ```
 
 The script (located in `scripts/deploy.ps1`):
+
 - Validates environment variables
 - Creates deployment package with .zipignore support
 - Uploads to Azure
@@ -105,6 +112,7 @@ The script (located in `scripts/deploy.ps1`):
 For detailed manual deployment process, read `references/deployment-guide.md`. Summary:
 
 1. **Install EpiCloud module**:
+
 ```powershell
 Install-Module -Name EpiCloud -Scope CurrentUser -Force
 Import-Module EpiCloud
@@ -117,6 +125,7 @@ Import-Module EpiCloud
    - Exclude `.next` and `node_modules`
 
 3. **Upload and deploy**:
+
 ```powershell
 Connect-EpiCloud -ProjectId $projectId -ClientKey $clientKey -ClientSecret $clientSecret
 $sasUrl = Get-EpiDeploymentPackageLocation
@@ -127,11 +136,13 @@ Start-EpiDeployment -DeploymentPackage "myapp.head.app.20250610.zip" -TargetEnvi
 ### Target Environments
 
 For **SaaS Frontend Hosting**, use:
+
 - `Test1`
 - `Test2`
 - `Production`
 
 For **PaaS hosting** (CMS 12), use:
+
 - `Integration`
 - `Preproduction`
 - `Production`
@@ -149,8 +160,9 @@ The following variables are automatically available during build and runtime:
 **Important!** the `OPTIMIZELY_GRAPH_GATEWAY` environment variable in the Optimizely Frontend Hosting runtime does not have a path to the Graph API, only the full hostname. Typically this is: `https://cg.optimizely.com` while the Optimizely Content JS SDK needs the full path to the Graph like ``
 
 Here is an example library function to use when getting the full path:
+
 ```typescript
-const DEFAULT_GRAPH_PATH = "/content/v2";
+const DEFAULT_GRAPH_PATH = '/content/v2';
 
 /**
  * Returns the Optimizely Graph gateway URL with the full path.
@@ -169,7 +181,7 @@ export function getGraphGatewayUrl(): string {
   const graphPath = process.env.OPTIMIZELY_GRAPH_PATH || DEFAULT_GRAPH_PATH;
 
   if (!gateway) {
-    throw new Error("OPTIMIZELY_GRAPH_GATEWAY environment variable is not set");
+    throw new Error('OPTIMIZELY_GRAPH_GATEWAY environment variable is not set');
   }
 
   // If the gateway already ends with the path, return as-is
@@ -178,16 +190,17 @@ export function getGraphGatewayUrl(): string {
   }
 
   // Remove trailing slash if present, then append the path
-  const baseUrl = gateway.replace(/\/+$/, "");
+  const baseUrl = gateway.replace(/\/+$/, '');
   return `${baseUrl}${graphPath}`;
 }
 ```
 
 It is being used like this:
+
 ```typescript
-  const client = new GraphClient(process.env.OPTIMIZELY_GRAPH_SINGLE_KEY!, {
-    graphUrl: getGraphGatewayUrl(),
-  });
+const client = new GraphClient(process.env.OPTIMIZELY_GRAPH_SINGLE_KEY!, {
+  graphUrl: getGraphGatewayUrl(),
+});
 ```
 
 Additional app settings can be configured through the Management Portal UI.
@@ -209,12 +222,14 @@ Get-EpiDeployment
 ### Update Deployment Script Settings
 
 Edit `scripts/deploy.ps1` to customize:
+
 - `$sourcePath` - Path to Next.js app
 - `$targetEnvironment` - Target environment name
 
 ### Troubleshoot Deployment Issues
 
 For troubleshooting, read `references/troubleshooting.md` which covers:
+
 - Missing environment variables during build
 - Invalid ZIP package structure
 - Incorrect naming conventions

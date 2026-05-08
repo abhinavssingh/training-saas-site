@@ -5,6 +5,7 @@ Complete guide to environment variables for Optimizely Frontend Hosting.
 ## Overview
 
 Environment variables in Optimizely Frontend Hosting are used at two different times:
+
 1. **Build time**: Available during `npm run build` or `yarn build`
 2. **Runtime**: Available when the Next.js application is running
 
@@ -23,6 +24,7 @@ These are used by PowerShell scripts to authenticate with the Optimizely Cloud D
 **Set in**: Local environment (your machine)
 
 **Example**:
+
 ```powershell
 $env:OPTI_PROJECT_ID = "2a561398-d517-4634-9bc4-aab5008a8e1a"
 ```
@@ -38,6 +40,7 @@ $env:OPTI_PROJECT_ID = "2a561398-d517-4634-9bc4-aab5008a8e1a"
 **Set in**: Local environment (your machine)
 
 **Example**:
+
 ```powershell
 $env:OPTI_CLIENT_KEY = "dxp-abc123xyz456"
 ```
@@ -55,6 +58,7 @@ $env:OPTI_CLIENT_KEY = "dxp-abc123xyz456"
 **Security**: Keep this secret! Don't commit to version control.
 
 **Example**:
+
 ```powershell
 $env:OPTI_CLIENT_SECRET = "your-secret-here"
 ```
@@ -74,6 +78,7 @@ These variables are automatically provided by Optimizely Frontend Hosting and ar
 **Available**: Build time and runtime
 
 **Usage in Next.js**:
+
 ```typescript
 const cmsUrl = process.env.OPTIMIZELY_CMS_URL;
 ```
@@ -87,6 +92,7 @@ const cmsUrl = process.env.OPTIMIZELY_CMS_URL;
 **Available**: Build time and runtime
 
 **Usage in Next.js**:
+
 ```typescript
 const graphEndpoint = process.env.OPTIMIZELY_GRAPH_GATEWAY;
 
@@ -94,9 +100,9 @@ const response = await fetch(graphEndpoint, {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${process.env.OPTIMIZELY_GRAPH_SECRET}`
+    Authorization: `Bearer ${process.env.OPTIMIZELY_GRAPH_SECRET}`,
   },
-  body: JSON.stringify({ query: graphqlQuery })
+  body: JSON.stringify({ query: graphqlQuery }),
 });
 ```
 
@@ -109,18 +115,20 @@ const response = await fetch(graphEndpoint, {
 **Available**: Build time and runtime
 
 **Security**: Never expose this in client-side code. Use only in:
+
 - Server-side code
 - API routes
 - `getStaticProps` / `getServerSideProps`
 - Server components (Next.js 13+ App Router)
 
 **Usage**:
+
 ```typescript
 // In API route or server component
 const response = await fetch(process.env.OPTIMIZELY_GRAPH_GATEWAY, {
   headers: {
-    'Authorization': `Bearer ${process.env.OPTIMIZELY_GRAPH_SECRET}`
-  }
+    Authorization: `Bearer ${process.env.OPTIMIZELY_GRAPH_SECRET}`,
+  },
 });
 ```
 
@@ -182,10 +190,12 @@ CACHE_TTL_SECONDS=3600
 ### Naming Conventions
 
 **For Next.js public variables** (exposed to browser):
+
 - Prefix with `NEXT_PUBLIC_`
 - Example: `NEXT_PUBLIC_API_URL`
 
 **For server-only variables**:
+
 - No prefix required
 - Never accessible from browser
 - Example: `DATABASE_URL`, `API_SECRET`
@@ -206,12 +216,13 @@ Variables are loaded in this order (later sources override earlier ones):
 ### Build-Time Variables
 
 Used during `npm run build` or `yarn build`:
+
 ```typescript
 // next.config.js
 module.exports = {
   env: {
-    API_URL: process.env.API_URL
-  }
+    API_URL: process.env.API_URL,
+  },
 };
 ```
 
@@ -220,6 +231,7 @@ These are **baked into the build** and cannot be changed without rebuilding.
 ### Runtime Variables
 
 Available when the application is running:
+
 ```typescript
 // pages/api/data.ts
 export default function handler(req, res) {
@@ -269,6 +281,7 @@ NEXT_PUBLIC_API_URL=https://api.example.com
 **Symptom**: Build fails with "undefined" error
 
 **Solution**:
+
 1. Add variable in PaaS Portal > App Settings
 2. Wait 2-3 minutes for changes to apply
 3. Start new deployment
@@ -278,15 +291,17 @@ NEXT_PUBLIC_API_URL=https://api.example.com
 **Symptom**: Application runs but variable is undefined
 
 **Solution**:
+
 1. Verify variable is set in App Settings for the correct environment
 2. Restart application: Troubleshoot tab > Restart Web App
 3. Check variable name spelling matches exactly
 
-### NEXT_PUBLIC_ variable not working in browser
+### NEXT*PUBLIC* variable not working in browser
 
 **Symptom**: Variable is undefined in browser console
 
 **Common causes**:
+
 1. Variable was added after build (must rebuild)
 2. Typo in variable name
 3. Missing `NEXT_PUBLIC_` prefix
@@ -300,6 +315,7 @@ NEXT_PUBLIC_API_URL=https://api.example.com
 **Cause**: Used `NEXT_PUBLIC_` prefix on a secret variable
 
 **Solution**:
+
 1. Remove `NEXT_PUBLIC_` prefix
 2. Move secret usage to server-side code
 3. Redeploy with corrected configuration
@@ -310,6 +326,7 @@ NEXT_PUBLIC_API_URL=https://api.example.com
 ### App Router (Next.js 13+)
 
 Server Components can access all environment variables:
+
 ```typescript
 // app/page.tsx (Server Component)
 export default async function Page() {
@@ -319,6 +336,7 @@ export default async function Page() {
 ```
 
 Client Components can only access `NEXT_PUBLIC_` variables:
+
 ```typescript
 'use client';
 // app/component.tsx (Client Component)
@@ -331,6 +349,7 @@ export default function Component() {
 ### Pages Router (Next.js 12 and earlier)
 
 Server-side functions can access all variables:
+
 ```typescript
 // pages/index.tsx
 export async function getServerSideProps() {
@@ -340,6 +359,7 @@ export async function getServerSideProps() {
 ```
 
 Client-side code needs `NEXT_PUBLIC_` prefix:
+
 ```typescript
 // pages/index.tsx
 export default function Page() {
@@ -365,6 +385,7 @@ PaaS Portal App Settings: (none required - Optimizely variables are automatic)
 Local deployment credentials (same as above)
 
 PaaS Portal App Settings (Test1):
+
 ```
 NEXT_PUBLIC_ANALYTICS_ID=GA-TEST-123
 NEXT_PUBLIC_API_URL=https://api-test.example.com
@@ -373,6 +394,7 @@ ENABLE_DEBUG_MODE=true
 ```
 
 PaaS Portal App Settings (Production):
+
 ```
 NEXT_PUBLIC_ANALYTICS_ID=GA-PROD-456
 NEXT_PUBLIC_API_URL=https://api.example.com
