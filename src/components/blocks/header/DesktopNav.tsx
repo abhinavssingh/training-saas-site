@@ -1,9 +1,9 @@
 'use client';
 
 import { PopoverGroup } from '@headlessui/react';
-import { MenuItemDesktop } from './MenuItemDesktop';
+import MenuItemDesktop from './MenuItemDesktop';
 
-export function DesktopNav({ items }: { items: any[] }) {
+export default function DesktopNav({ items }: { items: any[] }) {
   return (
     <PopoverGroup as="nav" className="hidden gap-1 lg:flex">
       {items.map((item) => (

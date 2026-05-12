@@ -1,4 +1,4 @@
-export function MenuIcon({ className = '' }) {
+export default function MenuIcon({ className = '' }) {
   return (
     <svg
       className={className}

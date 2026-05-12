@@ -1,20 +1,23 @@
-import { CloseIcon } from './Ai Assistant/CloseIcon';
-import { MenuIcon } from './Ai Assistant/MenuIcon';
+import CloseIcon from './Ai Assistant/CloseIcon';
+import MenuIcon from './Ai Assistant/MenuIcon';
 
 interface Props {
   mobileOpen: boolean;
   onToggle: () => void;
+  showAiButton?: boolean;
 }
 
-export function HeaderAi({ mobileOpen, onToggle }: Props) {
+export default function HeaderAi({ mobileOpen, onToggle, showAiButton = false }: Props) {
   return (
-    <>
-      <button
-        type="button"
-        className="hidden items-center gap-2 rounded-full border border-amber-500 px-5 py-2 text-sm text-amber-700 transition hover:bg-amber-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 lg:flex"
-      >
-        ✧ Ask AI – &ldquo;Port &amp; Logistics JV under Belt &amp; Road&rdquo;
-      </button>
+    <div className="flex items-center gap-4">
+      {showAiButton && (
+        <button
+          type="button"
+          className="hidden items-center gap-2 rounded-full border border-amber-500 px-5 py-2 text-sm text-amber-700 transition hover:bg-amber-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 lg:flex"
+        >
+          ✧ Ask AI – &ldquo;Port &amp; Logistics JV under Belt &amp; Road&rdquo;
+        </button>
+      )}
 
       <button
         type="button"
@@ -26,6 +29,6 @@ export function HeaderAi({ mobileOpen, onToggle }: Props) {
       >
         {mobileOpen ? <CloseIcon className="h-6 w-6" /> : <MenuIcon className="h-6 w-6" />}
       </button>
-    </>
+    </div>
   );
 }

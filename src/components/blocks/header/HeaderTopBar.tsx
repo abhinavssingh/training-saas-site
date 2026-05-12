@@ -30,7 +30,7 @@ function useDocumentLanguage(): [Lang, (next: Lang) => void] {
   return [lang, change];
 }
 
-export function HeaderTopBar() {
+export default function HeaderTopBar() {
   const [lang, setLang] = useDocumentLanguage();
 
   const pillBase =
@@ -41,7 +41,7 @@ export function HeaderTopBar() {
   return (
     <div className="bg-black text-sm text-white">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-2">
-        <div>Federal Government Ministry of Investment</div>
+        <div>Government Ministry of Investment</div>
 
         <div className="flex items-center gap-4 text-xs">
           <a href="/en/accessibility" className="hover:underline">

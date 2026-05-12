@@ -1,4 +1,4 @@
-export function CloseIcon({ className = '' }) {
+export default function CloseIcon({ className = '' }) {
   return (
     <svg
       className={className}

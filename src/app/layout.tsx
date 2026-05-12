@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
-import { Footer, Header } from '@/components/layout';
+import FooterCMS from '@/components/blocks/footer/FooterCMS';
+import HeaderCMS from '@/components/blocks/header/HeaderCMS';
 import '@/lib/config';
 // Initialize Optimizely SDK registries
 import '@/optimizely';
@@ -32,9 +33,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} flex min-h-screen flex-col antialiased`}
       >
-        <Header />
+        <HeaderCMS />
         <main className="flex-1">{children}</main>
-        <Footer />
+        <FooterCMS />
       </body>
     </html>
   );
