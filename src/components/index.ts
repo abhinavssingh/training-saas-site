@@ -14,6 +14,7 @@ export { default as ContentContainerSection } from './sections/ContentContainerS
 export { default as CardBlock } from './blocks/CardBlock';
 export { default as Header } from './blocks/header/Header';
 export { default as Footer } from './blocks/footer/Footer';
+export { default as SearchModal } from './blocks/search/SearchModal';
 
 // Element components
 export { default as PersonElement } from './elements/PersonElement';
