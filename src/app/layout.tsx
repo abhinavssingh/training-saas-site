@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import FooterCMS from '@/components/blocks/footer/FooterCMS';
+import BreadcrumbCMS from '@/components/blocks/header/BreadcrumbCMS';
 import HeaderCMS from '@/components/blocks/header/HeaderCMS';
 import '@/lib/config';
 // Initialize Optimizely SDK registries
@@ -18,7 +19,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Ministry of Investment',
+  title: 'Ministry of Investment - UAE',
   description:
     'World-class infrastructure and strategic location at the crossroads of continents, enabling seamless connectivity',
 };
@@ -34,6 +35,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} flex min-h-screen flex-col antialiased`}
       >
         <HeaderCMS />
+        <BreadcrumbCMS />
         <main className="flex-1">{children}</main>
         <FooterCMS />
       </body>

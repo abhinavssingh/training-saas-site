@@ -8,6 +8,7 @@ import DesktopNav from './DesktopNav';
 import HeaderAi from './HeaderAi';
 import HeaderTopBar from './HeaderTopBar';
 import MobileNav from './MobileNav';
+import SearchButton from './SearchButton';
 
 type Props = {
   content: ContentProps<typeof HeaderCT>;
@@ -33,12 +34,14 @@ export default function Header({ content }: Props) {
           <DesktopNav items={menuItems} />
 
           {/* Right-side controls - AI Button & Mobile Menu Trigger */}
-          <div className="ms-auto">
+
+          <div className="ms-auto flex items-center gap-3">
             <HeaderAi
               mobileOpen={mobileOpen}
               onToggle={() => setMobileOpen((v) => !v)}
               showAiButton={showAiButton}
             />
+            <SearchButton onClick={() => console.log('open search modal')} />
           </div>
         </div>
       </div>

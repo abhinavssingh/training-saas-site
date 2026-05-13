@@ -8,3 +8,5 @@ export { default as MegaMenu } from './MegaMenu';
 export { default as MenuItemDesktop } from './MenuItemDesktop';
 export { default as MenuItemMobile } from './MenuItemMobile';
 export { default as MobileNav } from './MobileNav';
+export { default as SearchButton } from './SearchButton';
+export { default as Breadcrumb } from './Breadcrumb';
