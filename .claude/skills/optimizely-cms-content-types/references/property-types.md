@@ -10,8 +10,8 @@ All property types support these common options:
 {
   displayName?: string;      // Friendly name shown in CMS
   description?: string;      // Tooltip help text
-  required?: boolean;        // Must have a value
-  localized?: boolean;       // Different value per locale/language
+  isRequired?: boolean;        // Must have a value
+  isLocalized?: boolean;       // Different value per locale/language
   group?: string;            // Property group key
   sortOrder?: number;        // Display order (lower numbers first)
   indexingType?: 'searchable' | 'queryable' | 'disabled';  // Default: 'searchable'
@@ -29,7 +29,7 @@ title: {
   displayName: 'Title',
   description: 'Help text for editors',
   isRequired: false,
-  localized: false,
+  isLocalized: false,
   minLength: 0,
   maxLength: 255,
   pattern: '',  // Regular expression

@@ -34,6 +34,120 @@ Verify that the CLI can connect to your CMS instance.
 npx @optimizely/cms-cli@latest login
 ```
 
+### Folder Structure
+
+```
+├── optimizely.ts                # Optimizely CMS SDK configuration
+├── app                          # Next.js App Router
+│   ├── favicon.ico              # Site favicon
+│   ├── globals.css              # Global styles
+│   ├── layout.tsx               # Root layout wrapper
+│   ├── not-found.tsx            # Custom 404 page
+│   ├── page.tsx                 # Homepage (/)
+│   │
+│   ├── api                      # API routes
+│   │   └── search
+│   │       └── route.ts         # Search API endpoint
+│   │
+│   ├── debug
+│   │   └── route.ts             # Debug endpoint for CMS data
+│   │
+│   ├── preview
+│   │   └── page.tsx             # CMS preview mode page
+│   │
+│   ├── search
+│   │   └── page.tsx             # Search results page
+│   │
+│   └── [...slug]
+│       └── page.tsx             # Dynamic CMS-driven routing
+│
+├── components                  # Reusable UI components
+│   ├── index.ts                 # Barrel exports
+│   │
+│   ├── blocks                  # CMS Blocks
+│   │   ├── CardBlock.tsx       # Card block UI
+│   │   ├── footer
+│   │   │   └── Footer.tsx      # Footer component
+│   │   ├── header
+│   │   │   ├── Breadcrumb.tsx  # Breadcrumb navigation
+│   │   │   └── Header.tsx      # Header component
+│   │   └── search
+│   │       ├── SearchBox.tsx   # Search input UI
+│   │       └── SearchModal.tsx # Search modal UI
+│   │
+│   ├── elements
+│   │   └── BannerElement.tsx   # Banner UI element
+│   │
+│   ├── experiences
+│   │   └── BlankExperience.tsx # Base experience layout
+│   │
+│   ├── layout
+│   │   ├── CommunicationInjector.tsx # Inject scripts/personalization
+│   │   ├── index.ts                  # Layout exports
+│   │   ├── Logo.tsx                  # Logo component
+│   │   └── PreviewError.tsx          # Preview error handler
+│   │
+│   ├── pages
+│   │   ├── ArticlePage.tsx    # Article page template
+│   │   └── PersonPage.tsx     # Person page template
+│   │
+│   └── sections
+│       └── ContentContainerSection.tsx # Layout container section
+│
+├── content-types              # CMS data models (TypeScript types)
+│   ├── index.ts                # Type exports
+│   │
+│   ├── blocks
+│   │   ├── CardBlock.ts       # Card block schema
+│   │   ├── SeoBlock.ts        # SEO schema
+│   │   ├── footer
+│   │   │   └── Footer.ts      # Footer schema
+│   │   └── header
+│   │       └── Header.ts      # Header schema
+│   │
+│   ├── elements
+│   │   └── BannerElement.ts   # Banner schema
+│   │
+│   ├── experiences
+│   │   └── LandingPageExperience.ts # Experience schema
+│   │
+│   ├── page
+│   │   └── ArticlePage.ts     # Article page schema
+│   │
+│   └── sections
+│       └── ContentContainerSection.ts # Section schema
+│
+├── display-templates         # Rendering templates
+│   ├── ColumnDisplayTemplate.ts     # Column layout template
+│   ├── index.ts                     # Template exports
+│   │
+│   ├── elements
+│   │   └── BannerElementDisplayTemplate.ts # Banner renderer
+│   │
+│   ├── experience
+│   │   └── BlankSectionDisplayTemplate.ts  # Default experience renderer
+│   │
+│   └── sections
+│       └── ContentContainerSectionDisplayTemplate.ts # Section renderer
+│
+└── lib                        # Utilities & helpers
+    ├── cn.ts                  # Classname utility
+    ├── config.ts              # App configuration
+    ├── constants.ts           # Static constants
+    ├── seo.ts                 # SEO utilities
+    │
+    ├── graphql               # GraphQL integration
+    │   ├── index.ts          # Client setup
+    │   └── queries
+    │       ├── footerQuery.ts # Footer query
+    │       ├── headerQuery.ts # Header query
+    │       └── index.ts       # Query exports
+    │
+    └── types
+        ├── transformFooterData.ts # Footer data transformer
+        └── transformHeaderData.ts # Header data transformer
+```
+
 ### Sync content types to the CMS
 
 After defining your content types, push them to the CMS using the CLI.
