@@ -5,7 +5,7 @@ description: 'Conventions for building accessible, RTL-ready, modular layout/UI 
 
 # Optimizely Frontend Component Conventions
 
-Principles for building UI components in this codebase. The Header at `src/components/layout/Header/` and Footer at `src/components/layout/Footer/` are the canonical reference implementations — when in doubt, mirror their structure.
+Principles for building UI components in this codebase. The Header at `src/components/blocks/Header/` and Footer at `src/components/blocks/Footer/` are the canonical reference implementations — when in doubt, mirror their structure.
 
 ## When to apply this skill
 
@@ -46,14 +46,14 @@ For a typical new layout component (a drawer, a sidebar, a mega menu, etc.):
 1. Read `references/file-layout.md` for the folder structure and TypeScript conventions.
 2. Read `references/headless-ui.md` to pick the right primitive and avoid the v2 pitfalls.
 3. Read `references/accessibility.md` and `references/rtl.md` to know what "done" looks like.
-4. Look at `references/header-reference.md` (interactive chrome) and `references/footer-reference.md` (static chrome) for annotated walkthroughs of how each principle is applied.
+4. Look at `references/header-reference.md` (CMS driven) and `references/footer-reference.md` (CMS driven) for annotated walkthroughs of how each principle is applied.
 5. If something breaks, check `references/troubleshooting.md` first — most frontend bugs in this codebase have already been encountered and documented.
 
 ## Authoring checklist
 
 Before considering any layout/UI component done:
 
-1. File layout follows `src/components/layout/<Feature>/` with one concern per file; static data is colocated in `<Feature>.Data.ts` with an exported interface.
+1. File layout follows `src/components/layout/<Feature>/` with one concern per file;
 2. Every interactive primitive uses Headless UI; no hand-rolled open/close state for things HUI covers.
 3. `npm run lint` is clean; `npx tsc --noEmit` is clean.
 4. Tab through every interactive surface — focus is always visible, Esc closes overlays, click-outside closes overlays.
@@ -71,3 +71,4 @@ Before considering any layout/UI component done:
 - `references/header-reference.md` — Annotated walkthrough of the Header (state-owning shell, Headless UI, RTL toggle, mega menu, mobile drawer); the Header refactor fix log.
 - `references/footer-reference.md` — Annotated walkthrough of the Footer (server-rendered, content-info landmark, link grid, social icons); the Footer audit fix log; responsive-grid defaults.
 - `references/troubleshooting.md` — Click-outside doesn't close, Tab stops invisible, span-as-link, RTL doesn't mirror, hydration warnings, file-truncation recovery.
+- `references/search-reference` — Annotated walkthrough of the Search

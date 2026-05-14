@@ -1,90 +1,218 @@
-# Footer — Annotated Walkthrough
+# Footer CMS Integration Guide
 
-The Footer at `src/components/layout/Footer/` is one of the two canonical implementations of every principle in this skill (the other is the Header — see `header-reference.md`). It's a server-rendered, content-info landmark that sits below every page; nothing in the Footer needs client-side state.
+## Overview
 
-## What each file demonstrates
+The Footer has been successfully converted from a static component to a CMS-driven component that fetches content from Optimizely SaaS CMS.
 
-### `Footer.tsx`
+## What Changed
 
-`<footer role="contentinfo">` shell. The four link columns + the EmiratesGrid live inside `<nav aria-label="Footer">`. Server Component.
+### 1. **Layout Integration** ✅
 
-Demonstrates: explicit landmark roles (`contentinfo`, named `nav`), server-first for pure markup, responsive grid that lays out 2x2 on mobile and 6-up on desktop.
+- **File**: `src/app/layout.tsx`
+- **Change**: Replaced static `Footer` import from `@/components/layout` with `FooterCMS` wrapper
+- **Impact**: Footer now fetches content from CMS instead of being hardcoded
 
-### `Footer.Data.ts`
+### 2. **Footer Wrapper Component** ✅
 
-Three exports: `footerSections`, `emirates`, `socialLinks`. Each backed by an exported TypeScript interface (`FooterSection`, `SocialLink`).
+- **File**: `src/components/FooterCMS.tsx` (NEW)
+- **Purpose**: Server component that fetches Footer content from CMS
+- **Fetches from**: `/footer/`, `/global/footer/`, or `/settings/footer/` paths
+- **Returns**: Renders Footer via `OptimizelyComponent` for proper type resolution
 
-Demonstrates: data colocation for ALL static content — including the platforms/social links that initially lived inline in `SocialIcons.tsx` and were promoted out as part of the audit.
+### 3. **Component Registration** ✅
 
-### `FooterColumn.tsx`
+- **File**: `src/optimizely.ts`
+- **Status**: Footer is properly registered in resolver map
+- **Component Path**: `src/components/blocks/footer/Footer.tsx`
+- **Exports**: All Footer-related components are exported from `src/components/index.ts`
 
-The slugify pattern that ties each `<h3>` to its `<ul>` via `aria-labelledby` and a stable id. Every `<Link>` carries a `focus-visible` ring. Server Component.
+### 4. **Content Type Definitions** ✅
 
-Demonstrates: heading <-> list association, focus rings on every interactive surface, `role="list"` on `<ul>` to survive Safari's list-style stripping.
+All defined in `src/content-types/blocks/footer/`:
 
-### `FooterColumns.tsx`
+- `FooterCT` - Main Footer component
+- `FooterSectionCT` - Section containers (e.g., "Products", "Company")
+- `FooterLinkCT` - Individual links
+- `EmirateCardCT` - Emirates grid cards
+- `SocialLinkCT` - Social media links
 
-Pure markup — just `.map` over `footerSections` rendering one `FooterColumn` per entry. Server Component.
+### 5. **Removed Duplicate** ✅
 
-Demonstrates: a thin renderer-shell that exists purely so the parent stays declarative.
+- **File**: `src/components/layout/index.ts`
+- **Change**: Removed static Footer export to avoid confusion
 
-### `EmiratesGrid.tsx`
+## Required CMS Setup
 
-`<ul role="list" aria-labelledby="footer-emirates-heading">` over `EmirateCard` `<li>` items. Outer wrapper has `col-span-2 lg:col-span-2` so the grid spans the full width on mobile (sits below the 2x2 link grid) and takes 2 of the 6 columns on lg.
+### Step 1: Push Content Type Definitions
 
-Demonstrates: list semantics on a visual grid, heading association, mobile col-span to break out of a 2-col mobile shell.
+Run the following command to sync the Footer content types to your CMS:
 
-### `EmirateCard.tsx`
+```bash
+npm run cms:push-config
+```
 
-Tiny presentational card — flag swatch + name + subtitle. The decorative red bar carries `aria-hidden="true"`. No state, no interactivity.
+This will register the following content types in CMS:
 
-Demonstrates: `aria-hidden` on decorative content, server-component-by-default for pure markup.
+- `Footer`
+- `FooterSection`
+- `FooterLink`
+- `EmirateCard`
+- `SocialLink`
 
-### `FooterBottomBar.tsx`
+### Step 2: Create Footer Content in CMS
 
-Copyright line, last-updated `<time dateTime="ISO">`, social icons row. `sm:ms-2` (logical, RTL-safe) instead of `sm:ml-2`.
+1. **Navigate to Asset Panel** in Optimizely CMS
+2. **Create new content item** with type `Footer`
+3. **Set path to one of**:
+   - `/footer/` (recommended)
+   - `/global/footer/`
+   - `/settings/footer/`
+4. **Fill in required properties**:
+   - `sections` - Array of FooterSection items
+   - `emirates` - Array of EmirateCard items
+   - `socialLinks` - Array of SocialLink items
+   - `copyrightText` - Copyright text (e.g., "Ministry of Investment")
+   - `lastUpdated` - DateTime field (e.g., current date)
 
-Demonstrates: logical Tailwind classes, machine-readable time semantics, responsive flex direction (`flex-col sm:flex-row`).
+### Step 3: Create Supporting Content Items
 
-### `SocialIcons.tsx`
+#### Add Footer Sections
 
-Real `<a target="_blank" rel="noopener noreferrer" aria-label="...">` over an SVG `<path>`. The whole row is a `<ul role="list" aria-label="Social media">`. Each link has a `focus-visible` ring. Driven by `socialLinks` from `Footer.Data.ts`.
+Each section (e.g., "Products", "Company") should have:
 
-Demonstrates: external-link ARIA, focus rings, list semantics on icon rows, data-driven rendering, real SVG icons (not `<span>` text-as-icon).
+- `title` - Section heading
+- `links` - Array of FooterLink items
 
-## Footer audit fix log
+#### Add Footer Links
 
-For posterity, here's what was broken before this skill existed and got fixed during the Footer audit:
+Each link needs:
 
-| File                             | Bug                                                                                                                                       | Fix                                                                                                                    |
-| -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `SocialIcons.tsx`                | `<span>`s, not links. Two-letter labels (`x`, `in`, `ig`, `yt`). No focus ring.                                                           | Real `<a>`s, full platform names in `aria-label`, real SVG icons, focus rings. Data moved to `Footer.Data.ts`.         |
-| `FooterColumn.tsx`               | `<Link>` had hover but no `focus-visible`. `<ul>` lacked `role="list"` (Safari quirk). No heading <-> list association.                   | Added focus rings, `role="list"`, `aria-labelledby` via slugified id.                                                  |
-| `Footer.tsx` (landmarks)         | No landmark around the link columns.                                                                                                      | Wrapped in `<nav aria-label="Footer">` and added explicit `role="contentinfo"` on the footer.                          |
-| `EmiratesGrid.tsx` (semantics)   | Plain `<div>` grid of cards — no list semantics.                                                                                          | Promoted to `<ul role="list">` over `<li>`s with `aria-labelledby`.                                                    |
-| `EmirateCard.tsx`                | Decorative red bar not marked `aria-hidden`.                                                                                              | Added `aria-hidden="true"`.                                                                                            |
-| `FooterBottomBar.tsx`            | `sm:ml-2` (RTL-unsafe). Hardcoded date with no `<time>`.                                                                                  | `sm:ms-2`, wrapped date in `<time dateTime>`.                                                                          |
-| `Footer.tsx` (outer grid)        | `grid-cols-1 gap-10` made the four link sections stack single-file on mobile, wasting horizontal space.                                   | `grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-6` — link sections lay out 2x2 on mobile, six columns on lg.                |
-| `EmiratesGrid.tsx` (mobile span) | Was a sibling of the four FooterColumns inside the outer grid; in a 2-col mobile grid it would have squeezed into one of the two columns. | Added `col-span-2` so it sits as a full-width row below the 2x2 mobile grid; `lg:col-span-2` keeps the desktop layout. |
+- `label` - Display text
+- `href` - URL
 
-Each fix is a one-liner once you know what to look for. The point of this skill is to make sure the issues never appear in new code.
+#### Add Emirates Cards
 
-## Responsive-grid defaults
+Each emirate card needs:
 
-A general principle that fell out of the Footer audit: **`grid-cols-1` is rarely the right mobile default for a multi-section layout.** A footer with four narrow link columns should be at least 2-up on mobile so the page isn't a tall single-file list.
+- `name` - Emirate name (e.g., "Dubai")
+- `subtitle` - Additional text
+- `href` - Optional link
 
-- **Link / menu columns** -> `grid-cols-2 lg:grid-cols-N` as the default. Use `col-span-2` on any section that's wider than a single mobile column (cards, image-heavy promo, the EmiratesGrid).
-- **Use `gap-x-*` and `gap-y-*` separately** when mobile horizontal spacing should differ from vertical. `gap-x-6 gap-y-10` keeps rows generously spaced while keeping side-by-side columns from getting crammed.
-- **Card grids** -> `grid-cols-1 sm:grid-cols-2 lg:grid-cols-3` is fine for full-width cards. Tight row-grids (sector pills, social icons, metric cards) start at `grid-cols-2` or higher even at the smallest width.
-- **`lg` breakpoint boundary** -> desktop and mobile UIs must be mutually exclusive at the breakpoint; use `hidden lg:flex` and `lg:hidden` rather than mixing both representations of the same content into the same DOM.
+#### Add Social Links
 
-## When to use the Footer pattern
+Each social link needs:
 
-Use this layout pattern as a starting point for any chrome that:
+- `label` - Accessible label (screen reader text)
+- `href` - Social media URL
+- `iconPath` - SVG path data (24x24)
 
-- Sits below or alongside main content as supporting navigation/info.
-- Is server-renderable (no interaction state).
-- Has multiple parallel link/info sections that should align as a grid.
-- Needs landmarks for screen-reader navigation.
+### Step 4: Publish All Content
 
-Sub-footer sections (compliance bars, cookie strips, locale switchers) usually compose into the existing `FooterBottomBar.tsx` rather than being added as new top-level grid columns.
+1. Save the Footer and all related content
+2. **Publish** the Footer content item
+3. Publish all FooterSection and FooterLink items
+
+## How It Works
+
+### Rendering Flow
+
+```
+layout.tsx
+  ↓
+<FooterCMS />
+  ↓
+getClient().getContentByPath('/footer/')
+  ↓
+<OptimizelyComponent content={footer} />
+  ↓
+Footer.tsx component (resolved by optimizely.ts)
+  ↓
+Renders with CMS content
+```
+
+### Error Handling
+
+The FooterCMS component includes fallback behavior:
+
+1. **Tries primary path**: `/footer/`
+2. **Tries alternative paths**: `/global/footer/`, `/settings/footer/`
+3. **If not found**: Returns `null` (no footer rendered)
+4. **Logs warnings**: Check console for diagnostic messages
+
+## Troubleshooting
+
+### Issue: "No component found for content type \_Component"
+
+**Cause**: Footer content type key mismatch
+
+**Solution**:
+
+1. Verify Footer content in CMS has type `Footer` (not `_Component`)
+2. Check that content is published
+3. Ensure `npm run cms:push-config` was executed
+4. Check browser console for content type name
+
+### Issue: Footer not appearing on public site
+
+**Checklist**:
+
+- [ ] Footer content created in CMS
+- [ ] Footer is published (not draft)
+- [ ] Content path is `/footer/` (or alternative path matching FooterCMS.tsx)
+- [ ] Content type is `Footer`
+- [ ] `npm run cms:push-config` was executed
+- [ ] App rebuilt after CMS changes
+- [ ] No errors in server console (check terminal logs)
+
+### Issue: Footer visible in Asset Panel but not on site
+
+**Likely cause**: Content not published or wrong path
+
+**Steps**:
+
+1. Verify Footer content is marked as **Published**
+2. Check Footer content path matches fetching logic
+3. Verify all nested content (sections, links) is also published
+4. Clear Next.js cache: `npm run dev` (will rebuild)
+
+## Environment Variables
+
+Ensure your `.env` file has:
+
+```env
+OPTIMIZELY_GRAPH_SINGLE_KEY=your-api-key
+OPTIMIZELY_CMS_URL=https://your-cms-instance.optimizely.com
+OPTIMIZELY_GRAPH_GATEWAY=https://cg.optimizely.com
+```
+
+## TypeScript Types
+
+The Footer component uses proper TypeScript typing:
+
+```typescript
+import { ContentProps } from '@optimizely/cms-sdk';
+import { FooterCT } from '@/content-types/blocks/footer/Footer';
+
+type Props = {
+  content: ContentProps<typeof FooterCT>;
+};
+
+export default async function Footer({ content }: Props) {
+  // Use content.sections, content.emirates, etc.
+}
+```
+
+## Next Steps
+
+1. **Run config push**: `npm run cms:push-config`
+2. **Create Footer content** in Optimizely CMS Asset Panel
+3. **Publish all content** items
+4. **Rebuild app**: `npm run dev`
+5. **Test** on public site
+
+## Need Help?
+
+- Check the Footer component: [src/components/blocks/footer/Footer.tsx](../src/components/blocks/footer/Footer.tsx)
+- Review content types: [src/content-types/blocks/footer/](../src/content-types/blocks/footer/)
+- Check wrapper: [src/components/FooterCMS.tsx](../src/components/FooterCMS.tsx)
+- Review Optimizely setup: [CLAUDE.md](../../CLAUDE.md)
